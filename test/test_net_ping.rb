@@ -1,0 +1,18 @@
+######################################################################
+# test_net_ping.rb
+#
+# Test suite for all the Ping subclasses. Note that the Ping::ICMP
+# class test won't be run unless this is run as a privileged process.
+######################################################################
+require 'test_net_ping_external'
+require 'test_net_ping_http'
+require 'test_net_ping_tcp'
+require 'test_net_ping_udp'
+
+if Process.euid == 0
+   require 'test_net_ping_icmp'
+end
+
+if Config::CONFIG['host_os'] =~ /mswin|win32|dos|cygwin|mingw/i
+   require 'test_net_ping_wmi'
+end

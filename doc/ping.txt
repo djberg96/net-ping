@@ -1,0 +1,251 @@
+= Description
+   A simple Ruby interface to the 'ping' command.
+
+= Synopsis
+   require 'net/ping'
+   include Net
+
+   Ping::TCP.service_check = true
+
+   pt = Net::Ping::TCP.new(host)
+   pu = Net::Ping::UDP.new(host)
+   pe = Net::Ping::External.new(host)
+   ph = Net::Ping::HTTP.new(uri)
+
+   if pt.ping
+      puts "TCP ping successful"
+   else
+      puts "TCP ping unsuccessful: " +  pt.exception
+   end
+
+   if pu.ping
+      puts "UDP ping successful"
+   else
+      puts "UDP ping unsuccessful: " +  pu.exception
+   end
+
+   if pe.ping
+      puts "External ping successful"
+   else
+      puts "External ping unsuccessful: " +  pe.exception
+   end
+
+   if ph.ping?
+      puts "HTTP ping successful"
+   else
+      puts "HTTP ping unsuccessful: " + ph.exception
+   end
+
+= Ping Classes
+   * Ping::TCP
+   * Ping::UDP
+   * Ping::External
+   * Ping::HTTP
+   * Ping::ICMP
+   * Ping::WMI
+
+   All Ping classes are children of the Ping parent class (which should
+   never be instantiated directly).
+
+   The Ping::ICMP class requires root privileges on UNIX systems.
+
+   The Ping::WMI class only works on MS Windows.
+
+== Net::Ping
+Net::Ping.new(host=nil, port=7, timeout=5)
+   Creates and returns a new Ping object.  If the host is not specified
+   in the constructor then it must be specified in the ping method.
+
+== Net::Ping::TCP
+Ping::TCP.service_check
+   Returns the setting for how ECONNREFUSED is handled. By default, this is
+   set to false, i.e. an ECONNREFUSED error is considered a failed ping.
+
+Ping::TCP.service_check=(bool)
+   Sets the behavior for how ECONNREFUSED is handled. By default, this is
+   set to false, i.e. an ECONNREFUSED error is considered a failed ping.
+
+Ping::TCP#ping(host=nil)
+   Attempts to open a connection using TCPSocket with a +host+ specified
+   either here or in the constructor.  A successful open means the ping was
+   successful and true is returned.  Otherwise, false is returned.
+
+== Net::Ping::UDP
+Ping::UDP#ping
+   Attempts to open a connection using UDPSocket and sends the value of
+   Ping::UDP#data as a string across the socket.  If the return string matches,
+   then the ping was successful and true is returned.  Otherwise, false is
+   returned.
+	
+Ping::UDP#data
+   Returns the string that is sent across the UDP socket.
+	
+Ping::UDP#data=(string)
+   Sets the string that is sent across the UDP socket.  The default is "ping".
+   Note that the +string+ cannot be larger than MAX_DATA (64 characters).
+
+== Net::Ping::External
+Ping::External#ping
+   Uses the 'open3' module and calls your system's local 'ping' command with
+   various options, depending on platform.  If nothing is sent to stderr, the
+   ping was successful and true is returned.  Otherwise, false is returned.
+
+   The MS Windows platform requires the 'win32-open3' package.
+	
+== Ping::HTTP
+Ping::HTTP.new(uri=nil, port=80, timeout=5)
+   Identical to Net::Ping.new except that, instead of a host, the first
+   argument is a URI.
+	
+Ping::HTTP#ping
+   Checks for a response against +uri+.  As long as kind of Net::HTTPSuccess
+   response is returned, the ping is successful and true is returned.
+   Otherwise, false is returned and Ping::HTTP#exception is set to the error
+   message.
+
+   Note that redirects are automatically followed unless the
+   Ping::HTTP#follow_redirects method is set to false.
+
+Ping::HTTP#follow_redirect
+   Indicates whether or not a redirect should be followed in a ping attempt.
+   By default this is set to true.
+
+Ping::HTTP#follow_redirect=(bool)
+   Sets whether or not a redirect should be followed in a ping attempt.  If
+   set to false, then any redirect is considered a failed ping.
+
+Ping::HTTP#uri
+   An alias for Ping::HTTP#host.
+	
+Ping::HTTP#uri=(uri)
+   An alias for Ping::HTTP#host=.
+
+== Ping::ICMP
+Ping::ICMP#duration
+   The time it took to ping the host.  Not a precise value but a good estimate.
+
+== Ping::WMI
+Ping::WMI#ping(host, options={})
+   Unlike other Ping classes, this method returns a PingStatus struct that
+   contains various bits of information about the ping itself. The PingStatus
+   struct is a wrapper for the Win32_PingStatus WMI class.
+
+   In addition, you can pass options that will be interpreted as WQL parameters.
+
+Ping::WMI#ping?(host, options={})
+   Returns whether or not the ping succeeded.
+
+= Common Instance Methods
+Ping#exception
+   Returns the error string that was set if a ping call failed.  If an exception
+   is raised, it is caught and stored in this attribute.  It is not raised in
+   your code.
+	
+   This should be nil if the ping succeeded.
+
+Ping#host
+   Returns the host name that ping attempts will ping against.
+
+Ping#host=(hostname)
+   Sets the host name that ping attempts will ping against.
+
+Ping#port
+   Returns the port number that ping attempts will use.
+	
+Ping#port=(port)
+   Set the port number to open socket connections on.  The default is 7 (or
+   whatever your 'echo' port is set to).  Note that you can also specify a
+   string, such as "http".
+
+Ping#timeout
+   Returns the amount of time before the timeout module raises a TimeoutError
+   during connection attempts.  The default is 5 seconds.
+	
+Ping#timeout=(time)
+   Sets the amount of time before the timeout module raises a TimeoutError.
+   during connection attempts.
+	
+Ping#warning
+   Returns a warning string that was returned during the ping attempt.  This
+   typically occurs only in the Ping::External class, or the Ping::HTTP class
+   if a redirect occurred.
+
+== Notes
+   If a host is down *IT IS CONSIDERED A FAILED PING*, and the 'no answer from
+   +host+' text is assigned to the 'exception' attribute.  You may disagree with
+   this behavior, in which case you need merely check the exception attribute
+   against a regex as a simple workaround.
+
+== Pre-emptive FAQ
+   Q: "Why don't you return exceptions if a connection fails?"
+
+   A: Because ping is only meant to return one of two things - success or
+      failure. It's very simple. If you want to find out *why* the ping
+      failed, you can check the 'exception' attribute.
+
+   Q: "I know the host is alive, but a TCP or UDP ping tells me otherwise. What
+      gives?"
+
+   A: It's possible that the echo port has been disabled on the remote
+      host for security reasons. Your best best is to specify a different port
+      or to use Ping::ICMP or Ping::External instead.
+      
+      In the case of UDP pings, they are often actively refused. It may be
+      more pragmatic to set Ping::UDP.service_check = false.
+
+   Q: "Why does a TCP ping return false when I know it should return true?"
+
+   A: By default ECONNREFUSED errors will return a value of false. This is
+      contrary to what most other folks do for TCP pings. The problem with
+      their philosophy is that you can get false positives if a firewall blocks
+      the route to the host. The problem with my philosophy is that you can
+      get false negatives if there is no firewall (or it's not blocking the
+      route). Given the alternatives I chose the latter.
+
+      You can always change the default behavior by using the +service_check+
+      class method.
+      
+      A similar situation is true for UDP pings.
+
+   Q: "Couldn't you use traceroute information to tell for sure?"
+
+   A: I could but I won't so don't bug me about it. It's far more effort than
+      it's worth. If you want something like that, please port the
+      Net::Traceroute Perl module by Daniel Hagerty.
+
+= Known Bugs
+   You may see a test failure from the test_net_ping_tcp test case. You can
+   ignore these.
+   
+   The socket library that ships with the Windows One-Click installer has
+   known issues. This may cause the Ping::ICMP class to fail. In fact, I
+   make an effort to skip those tests if I detect the one-click installer.
+
+   UDP pings may not work with older versions of Ruby 1.9.x.
+
+   Please report any bugs on the project page at
+   http://www.rubyforge.org/projects/shards.
+
+= Acknowledgements
+   The Ping::ICMP#ping method is based largely on the identical method from
+   the Net::Ping Perl module by Rob Brown. Much of the code was ported by
+   Jos Backus on ruby-talk.
+
+= Future Plans
+   Add support for syn pings.
+
+= License
+   Artistic 2.0
+
+= Copyright
+   (C) 2003-2009 Daniel J. Berger, All Rights Reserved
+
+= Warranty
+   This package is provided "as is" and without any express or
+   implied warranties, including, without limitation, the implied
+   warranties of merchantability and fitness for a particular purpose.
+
+= Author
+   Daniel J. Berger
+   djberg96 at gmail dot com
+   imperator on IRC (irc.freenode.net)

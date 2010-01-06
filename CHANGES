@@ -1,0 +1,178 @@
+== 1.3.2 - 21-Sep-2009
+* Doing a 'require "net/ping"' was not automatically loading the
+  Net::Ping::WMI class on MS Windows. This has been fixed. Thanks go to
+  Joseph M. for the spot. 
+* Removed all $LOAD_PATH mangling for both the library and tests.
+* Fixed a bug in the Net::Ping::HTTP class where a failed redirect did
+  not set the @exception and @warning instance variables properly.
+* The PingStatus struct returned by Net::Ping::WMI is now frozen.
+* The test-unit library was switched from a runtime dependency to a
+  development dependency.
+* Added the :gem Rake task that builds a gem.
+* Updated the :gem_install task to use the :gem task as a prerequisite.
+* Updated the dependencies for MS Windows.
+* The Rake test tasks are now more Rakish, e.g. test:tcp instead of test_tcp.
+* Renamed example file names to avoid any potential confusion with actual
+  test files.
+
+== 1.3.1 - 22-Jul-2009
+* Removed class aliases, e.g. use Ping::External, not PingExternal.
+* Minor code change to eliminate a warning that popped up in 1.9.x.
+* The win32-open3 library is removed as a dependency for Ruby 1.9.x.
+* Changed license to Artistic 2.0.
+* Some gemspec and README updates.
+
+== 1.3.0 - 19-May-2009
+* Added the Ping::WMI class for MS Windows. This class encapsulates the
+  Win32_PingStatus WMI class. Unlike other ping methods, this one returns
+  a struct that contains various bits of information.
+* The Net::Ping::External class now ensures that handles opened by the open3
+  call are closed. Thanks go to Nick S. Kanakakorn for the spot and a
+  preliminary patch.
+* The Net::Ping::ICMP class now explicitly closes the socket if the call to
+  the Socket.pack_sockaddr_in method fails.
+* Some documentation updates.
+
+== 1.2.3 - 13-Jan-2008
+* Fixed a bug in the checksum private method where it would die on odd data
+  sizes. Thanks go to Jake Douglas for the spot.
+* A Socket.get_sockaddr_in call in the Ping::ICMP class is no longer included
+  as part of the overall ping time. Thanks go again to Jake Douglas for
+  the spot.
+* Added data_size tests to the Ping::ICMP test suite.
+* Renamed and updated the test files. The test-unit 2.x gem is now a
+  prerequisite as a result.
+
+== 1.2.2 - 22-Jan-2008
+* Bug fix for Ping::External where it was not honoring the timeout value.
+  Thanks go to Chris Morris for the spot and the patch.
+* Bug fix for Ping::External where non-English output could cause false
+  positives on MS Windows Vista or later. This library now requires the
+  windows-pr library on MS Windows systems as a result.
+* Added the Ping::UDP.service_check and Ping::UDP.service_check= class
+  methods. This method controls whether or not Errno::ECONNREFUSED or
+  Errno::ECONNRESET are considered successful pings or not.
+* The Ping::HTTP class no longer uses the resolv-replace library on MS Windows
+  because it was (ironically) causing timeouts.
+* Changed the Ping::TCP.econnrefused method to Ping::TCP.service_check. I
+  changed it because I now use a similar method in Ping::UDP, but that handles
+  more than Errno::ECONNREFUSED. An alias is provided to provide backwards
+  compatibility, but it is considered deprecated and will be removed in the
+  1.3.0 release.
+* Removed the install.rb file. The Rakefile now handles installation.
+
+== 1.2.1 - 6-Apr-2007
+* For the Ping::External class, if a ping attempt results in 100% packet loss
+  it is now considered a failed ping, regardless of whether or not an error
+  was sent to stdout.
+* Fixed the Ping::External class for OS X.
+* Added a Rakefile. Installation and testing should now be run via Rake tasks.
+* Minor fix for the Ping::ICMP class where I had accidentally dup'd some
+  aliases. This was harmless, but did cause warnings with -w.
+
+== 1.2.0 - 5-Dec-2006
+* Internal reorganization - each class now lives in its own file.
+* Added the Ping::ICMP class.  Thanks go to Jos Backus for contributing a 
+  large part of the code.
+* The host argument is now optional in the constructor.  You can now specify
+  it in the ping method instead.  Note that it must be specified in one place
+  or the other.
+* Each PingXXX class is now Ping::XXX instead.  However, class name aliases
+  have been setup for backwards compatibility for now.
+* The constructor for each Ping types now yields self.
+* Added the pingecho alias for the ping method for each Ping type.
+* Added the Ping::HTTP#follow_redirect accessor.
+* The Ping::HTTP#ping method now honors the timeout value.
+* The Ping::HTTP class now follows redirects automatically, though this is
+  configurable with the follow_redirect accessor.
+* The Ping::TCP.ecr and Ping::TCP.ecr= methods are now true class method
+  aliases (they were just wrappers previously).
+* The Ping::UDP class now enforces a 64 character limit on data that can be
+  sent on a udp ping.
+* Updated the gemspec.  Specifically, MS Windows now has a dependency on
+  the win32-open3 package.
+* Added inline rdoc.
+
+== 1.1.1 - 15-Jun-2006
+* Fixed a bug in PingTCP (bad variable name).  Thanks go to Anoop Chandran
+  for the spot.
+* Minor variable name refactoring.
+* Minor test updates.
+
+== 1.1.0 - 17-Jul-2005
+* Fixed a bug in the PingHTTP#ping method where I was accidentally passing
+  the timeout value instead of the port number as the third argument to
+  Net::HTTP.get_response.
+* The PingHTTP.new method now has a default port of 80.
+* Minor doc update for PingHTTP.new.
+
+== 1.0.1 - 22-Jun-2005
+* Bug fix for the install.rb file.  The gem is unaffected.
+
+== 1.0.0 - 14-Jun-2005
+* Renamed project from net-pingsimple to just net-ping.
+* Added a PingHTTP subclass.
+* Moved project to RubyForge.
+* Added a gemspec.
+
+== 0.3.1 - 9-Apr-2005
+* Updated PingExternal to use win32/open3 on Win32 platforms.
+* Minor error handling change for the PingSimple.econnrefused= method.  It now
+  raises an ArgumentError if any values other than true or false are passed.
+* PingSimple#warning and PingSimple#exception are now read-only methods.
+* The warning and exception attributes are now reset to nil between each call
+  to ping.
+* The data and data= methods are now unique to the PingUDP class.
+* The time and time= methods have been changed to timeout and timeout=,
+  respectively.
+* Removed the pingsimple.rd and pingsimple.html files.  The pingsimple.txt file
+  has been reorganized and is now rdoc friendly.
+* Added a few sample programs under the 'examples' directory.
+* Some minor test updates and changes.
+* Removed the INSTALL file.  That information is now in the README file.
+* Now requires Ruby 1.8.0 or later.
+
+== 0.3.0 - 12-Feb-2004
+* Fixed ping string for PingExternal class based on platform.  The old
+  string was really only good for Linux and *BSD.
+* Added Win32 support (requires win32_popen package).
+* Added warranty info.
+
+== 0.2.3 - 12-Aug-2003
+* Fixed a bug in PingExternal that could consume file descriptors if used in a loop
+* Added some initialization to avoid -w warnings
+* Removed VERSION() class method.  Use the constant instead
+* Modified test suite slightly
+* Moved rd2 docs to doc directory
+
+== 0.2.2 - 3-Apr-2003
+* Fixed handling of stdout in PingExternal
+
+== 0.2.1 - 27-Mar-2003
+* Fixed major bug with PingExternal class with regards to down hosts
+* Exceptions and warnings from PingExternal are now chomp'd
+* Modified test suite
+* Doc updates
+
+== 0.2.0 - 14-Feb-2003
+* The default behavior of PingTCP with regards to ECONNREFUSED is now 
+  configurable
+* Added a VERSION constant and method (to the base class)
+* Added a test suite (for those with testunit installed)
+* Doc changes, rearrangement and general cleanup
+* Manifest is now MANIFEST
+* Added an INSTALL file
+
+== 0.1.0 - 9-Dec-2002
+* Added ping? alias for ping method
+* Warnings now handled separately
+* Corrected a mis-named variable in Ping::External
+* Fixed the install.rb file
+* Updated and added docs
+* Renamed tarball to net-pingsimple to reflect RAA naming convention
+
+== 0.0.1a
+* Did this release ever happen?
+
+== 0.0.1
+* Initial release.
