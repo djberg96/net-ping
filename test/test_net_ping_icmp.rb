@@ -26,10 +26,6 @@ class TC_PingICMP < Test::Unit::TestCase
       @icmp = Ping::ICMP.new(@host)
    end
 
-   def test_version
-      assert_equal('1.3.2', Ping::ICMP::VERSION)
-   end
-   
    def test_ping
       assert_respond_to(@icmp, :ping)
       

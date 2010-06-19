@@ -22,10 +22,6 @@ class TC_Ping_WMI < Test::Unit::TestCase
       @wmi = Ping::WMI.new(@host) if @@windows
    end
 
-   def test_version
-      assert_equal('1.3.2', Ping::WMI::VERSION)
-   end
-   
    def test_ping_basic
       omit_unless(@@windows, 'skipped on Unix platforms')
       assert_respond_to(@wmi, :ping)

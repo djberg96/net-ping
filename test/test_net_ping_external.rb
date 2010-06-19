@@ -19,10 +19,6 @@ class TC_PingExternal < Test::Unit::TestCase
       @bad   = Ping::External.new(@bogus)
    end
 
-   def test_version
-      assert_equal('1.3.2', Ping::External::VERSION)
-   end
-   
    def test_ping
       assert_respond_to(@pe, :ping)
       assert_nothing_raised{ @pe.ping }

@@ -21,10 +21,6 @@ class TC_PingUDP < Test::Unit::TestCase
       @udp  = Ping::UDP.new(@host)
    end
 
-   def test_version
-      assert_equal('1.3.2', Ping::UDP::VERSION)
-   end
-   
    def test_ping
       assert_respond_to(@udp, :ping)
       assert_nothing_raised{ @udp.ping }

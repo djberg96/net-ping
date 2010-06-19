@@ -18,10 +18,6 @@ class TC_PingHTTP < Test::Unit::TestCase
       @bad  = Ping::HTTP.new('http://www.blabfoobarurgh.com') # One hopes not
    end
 
-   def test_version
-      assert_equal('1.3.2', Ping::HTTP::VERSION)
-   end
-   
    def test_ping
       assert_respond_to(@http, :ping)
       assert_nothing_raised{ @http.ping }
