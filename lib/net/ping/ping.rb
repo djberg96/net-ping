@@ -10,12 +10,12 @@ module Net
    #
    class Ping
       # The version of the net-ping library.
-      VERSION = '1.3.2'
+      VERSION = '1.3.3'
 
-      # The host to ping.  In the case of Ping::HTTP, this is the URI.
+      # The host to ping. In the case of Ping::HTTP, this is the URI.
       attr_accessor :host
 
-      # The port to ping.  This is set to the echo port (7) by default. The
+      # The port to ping. This is set to the echo port (7) by default. The
       # Ping::HTTP class defaults to port 80.
       #
       attr_accessor :port

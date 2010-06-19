@@ -10,6 +10,6 @@ require File.join(File.dirname(__FILE__), 'ping/icmp')
 require File.join(File.dirname(__FILE__), 'ping/external')
 require File.join(File.dirname(__FILE__), 'ping/http')
 
-if Config::CONFIG['host_os'] =~ /dos|mswin|cygwin|mingw|win32/i
-   require File.join(File.dirname(__FILE__), 'ping/wmi')
+if Config::CONFIG['host_os'] =~ /msdos|mswin|cygwin|mingw|win32/i
+  require File.join(File.dirname(__FILE__), 'ping/wmi')
 end
