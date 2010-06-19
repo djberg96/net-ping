@@ -1,3 +1,12 @@
+== 1.3.3 - ??
+* The Net::Ping::HTTP class will no longer fail because a root URI
+  is missing a trailing slash. If the URI#path is empty, it now defaults
+  to the root path.
+* The Net::Ping::UDP class now handles SocketError explicitly since
+  JRuby does not raise a system exception on a failed udp ping.
+* There's now a single version test instead of one per class.
+* Refactored the Rakefile a bit.
+
 == 1.3.2 - 21-Sep-2009
 * Doing a 'require "net/ping"' was not automatically loading the
   Net::Ping::WMI class on MS Windows. This has been fixed. Thanks go to
