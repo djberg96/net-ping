@@ -10,9 +10,15 @@ require 'test_net_ping_tcp'
 require 'test_net_ping_udp'
 
 if Process.euid == 0
-   require 'test_net_ping_icmp'
+  require 'test_net_ping_icmp'
 end
 
 if Config::CONFIG['host_os'] =~ /mswin|win32|dos|cygwin|mingw/i
-   require 'test_net_ping_wmi'
+  require 'test_net_ping_wmi'
+end
+
+class TC_Net_Ping < Test::Unit::TestCase
+  def test_net_ping_version
+    assert_equal('1.3.3', Net::Ping::VERSION)
+  end
 end
