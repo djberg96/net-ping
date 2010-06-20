@@ -13,7 +13,9 @@ if Process.euid == 0
   require 'test_net_ping_icmp'
 end
 
-if Config::CONFIG['host_os'] =~ /mswin|win32|dos|cygwin|mingw/i
+if Config::CONFIG['host_os'] =~ /mswin|win32|dos|cygwin|mingw/i &&
+  RUBY_PLATFORM != 'java'
+then
   require 'test_net_ping_wmi'
 end
 
