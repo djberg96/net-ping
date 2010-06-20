@@ -1,13 +1,15 @@
 require 'rbconfig'
 require File.join(File.dirname(__FILE__), 'ping')
 
-if Config::CONFIG['host_os'] =~ /mswin|win32|dos|cygwin|mingw/i
-   if RUBY_VERSION.to_f < 1.9
-      require 'win32/open3'
-   end
-   require 'windows/console'
+if Config::CONFIG['host_os'] =~ /mswin|win32|msdos|cygwin|mingw/i &&
+  RUBY_PLATFORM != 'java'
+then
+  if RUBY_VERSION.to_f < 1.9
+    require 'win32/open3'
+  end
+  require 'windows/console'
 else
-   require 'open3'            
+  require 'open3'            
 end
 
 # The Net module serves as a namespace only.
