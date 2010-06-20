@@ -5,7 +5,7 @@ require 'rbconfig'
 
 # Force non-blocking Socket.getaddrinfo on Unix systems. Do not use on
 # Windows because it (ironically) causes blocking problems.
-unless Config::CONFIG['host_os'] =~ /mswin|win32|dos|cygwin|mingw/i
+unless Config::CONFIG['host_os'] =~ /mswin|win32|msdos|cygwin|mingw/i
   require 'resolv-replace'
 end
 
@@ -38,8 +38,8 @@ module Net
     # If the HTTP#follow_redirect accessor is set to true (which it is
     # by default) and a redirect occurs during the ping, then the
     # HTTP#warning attribute is set to the redirect message, but the
-    # return result is still true.  If it's set to false then a false
-    # value is returned if a redirect occurs.
+    # return result is still true. If it's set to false then a redirect
+    # response is considered a failed ping.
     #
     # If no file or path is specified in the URI, then '/' is assumed.
     # 
