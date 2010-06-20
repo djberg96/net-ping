@@ -53,9 +53,9 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     assert_kind_of(Float, @http.duration)
   end
 
-  test 'duration returns no value on an unsuccessful ping' do
+  test 'duration is nil on an unsuccessful ping' do
     assert_false(@bad.ping)
-    assert_kind_of(Float, @http.duration)
+    assert_nil(@http.duration)
   end
 
   test 'host attribute basic functionality' do
