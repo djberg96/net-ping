@@ -238,7 +238,7 @@ Ping#warning
    Artistic 2.0
 
 = Copyright
-   (C) 2003-2009 Daniel J. Berger, All Rights Reserved
+   (C) 2003-2010 Daniel J. Berger, All Rights Reserved
 
 = Warranty
    This package is provided "as is" and without any express or
@@ -247,5 +247,3 @@ Ping#warning
 
 = Author
    Daniel J. Berger
-   djberg96 at gmail dot com
-   imperator on IRC (irc.freenode.net)
