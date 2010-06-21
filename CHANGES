@@ -1,11 +1,13 @@
 == 1.3.3 - ??
+* Bug fixes for JRuby on MS Windows. The code now explicitly checks for JRuby
+  in a few places to ensure it doesn't try to load unsupported libraries
+  on MS Windows. Thanks go to Rob Schultz for the spot and some patches.
 * The Net::Ping::HTTP class will no longer fail because a root URI
   is missing a trailing slash. If the URI#path is empty, it now defaults
   to the root path.
-* The Net::Ping::UDP class now handles SocketError explicitly since
-  JRuby does not raise a system exception on a failed udp ping.
-* There's now a single version test instead of one per class.
-* Refactored the Rakefile a bit.
+* The Rakefile tasks and naming were refactored.
+* Some tests were refactored to take advantage of test-unit 2.x features,
+  as well as make them better and more descriptive in general.
 
 == 1.3.2 - 21-Sep-2009
 * Doing a 'require "net/ping"' was not automatically loading the
