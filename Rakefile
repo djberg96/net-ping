@@ -2,31 +2,18 @@ require 'rake'
 require 'rake/testtask'
 include Config
 
-desc "Install the net-ping package (non-gem)"
-task :install do
-   dest1 = File.join(CONFIG['sitelibdir'], 'net')
-   dest2 = File.join(dest1, 'ping')
+namespace 'gem' do
+  desc 'Create the net-ping gem'
+  task :create do
+    spec = eval(IO.read('net-ping.gemspec'))
+    Gem::Builder.new(spec).build
+  end
 
-   Dir.mkdir(dest1) unless File.exists?(dest1)
-   Dir.mkdir(dest2) unless File.exists?(dest2)
-
-   FileUtils.cp('lib/net/ping.rb', dest1, :verbose => true)
-
-   Dir['lib/net/ping/*.rb'].each{ |file|
-      FileUtils.cp(file, dest2, :verbose => true)
-   }
-end
-
-desc 'Create and install the net-ping gem'
-task :gem_install => [:gem] do
-   gem_file = Dir["*.gem"].first
-   sh "gem install #{gem_file}"
-end
-
-desc 'Create the net-ping gem'
-task :gem do
-   spec = eval(IO.read('net-ping.gemspec'))
-   Gem::Builder.new(spec).build
+  desc 'Install the net-ping gem'
+  task :install => [:create] do
+    gem_file = Dir["*.gem"].first
+    sh "gem install #{gem_file}"
+  end
 end
 
 namespace 'example' do
