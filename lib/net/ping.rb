@@ -11,7 +11,7 @@ require File.join(File.dirname(__FILE__), 'ping/external')
 require File.join(File.dirname(__FILE__), 'ping/http')
 
 if Config::CONFIG['host_os'] =~ /msdos|mswin|cygwin|mingw|win32/i &&
-  JAVA_PLATFORM != 'java'
+  RUBY_PLATFORM != 'java'
 then
   require File.join(File.dirname(__FILE__), 'ping/wmi')
 end
