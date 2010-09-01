@@ -108,6 +108,11 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     assert_nil(@http.warning)
   end
 
+  test 'ping with user agent' do
+    @http.user_agent = "KDDI-CA32"
+    assert_true(@http.ping)
+  end
+
   def teardown
     @uri  = nil
     @http = nil

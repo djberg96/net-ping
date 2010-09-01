@@ -20,7 +20,10 @@ module Net
     # follow a redirect and will return false immediately on a redirect.
     # 
     attr_accessor :follow_redirect
-      
+
+    # Sets the user agent used for the HTTP request to a custom one.
+    attr_accessor :user_agent
+
     # Creates and returns a new Ping::HTTP object.  Note that the default
     # port for Ping::HTTP is 80.
     # 
@@ -53,9 +56,13 @@ module Net
       begin
         response = nil
         uri_path = uri.path.empty? ? '/' : uri.path
-        Timeout.timeout(@timeout){
-          response = Net::HTTP.get_response(uri.host, uri_path, @port)
-        }
+        headers = { }
+        headers["User-Agent"] = user_agent unless user_agent.nil?
+        Timeout.timeout(@timeout) do
+          Net::HTTP.new(uri.host, @port).start do |http|
+            response = http.request_get(uri_path, headers)
+          end
+        end
       rescue Exception => err
         @exception = err.message
       else
