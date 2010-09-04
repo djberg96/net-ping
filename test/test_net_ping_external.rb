@@ -18,64 +18,98 @@ class TC_Net_Ping_External < Test::Unit::TestCase
     @bad   = Net::Ping::External.new(@bogus)
   end
 
-  def test_ping
+  test "ping basic functionality" do
     assert_respond_to(@pe, :ping)
+  end
+
+  test "ping with no arguments" do
     assert_nothing_raised{ @pe.ping }
+  end
+
+  test "ping accepts a hostname" do
     assert_nothing_raised{ @pe.ping(@host) }
   end
 
-  def test_ping_aliases
+  test "ping returns a boolean" do
+    assert_boolean(@pe.ping)
+    assert_boolean(@bad.ping)
+  end
+
+  test "ping? alias" do
     assert_respond_to(@pe, :ping?)
-    assert_respond_to(@pe, :pingecho)
-    assert_nothing_raised{ @pe.ping? }
-    assert_nothing_raised{ @pe.ping?(@host) }
+    assert_alias_method(@pe, :ping?, :ping)
+  end
+
+  test "pingecho alias" do
     assert_nothing_raised{ @pe.pingecho }
-    assert_nothing_raised{ @pe.pingecho(@host) }
+    assert_alias_method(@pe, :pingecho, :ping)
   end
 
-  def test_good_ping     
-    assert_equal(true, @pe.ping?)
+  test "pinging a good host returns true" do
+    assert_true(@pe.ping?)
   end
 
-  def test_bad_ping
-    assert_equal(false, @bad.ping?)
-    assert_equal(false, @bad.exception.nil?, "Bad exception data")
+  test "pinging a bogus host returns false" do
+    assert_false(@bad.ping?)
   end
 
-  def test_duration
+  test "duration basic functionality" do
     assert_nothing_raised{ @pe.ping }
     assert_respond_to(@pe, :duration)
     assert_kind_of(Float, @pe.duration)
   end
 
-  def test_host
+  test "host getter basic functionality" do
     assert_respond_to(@pe, :host)
-    assert_respond_to(@pe, :host=)
     assert_equal('www.ruby-lang.org', @pe.host)
   end
 
-  def test_port
+  test "host setter basic functionality" do
+    assert_respond_to(@pe, :host=)
+    assert_nothing_raised{ @pe.host = @bad }
+    assert_equal(@bad, @pe.host)
+  end
+
+  test "port getter basic functionality" do
     assert_respond_to(@pe, :port)
-    assert_respond_to(@pe, :port=)
     assert_equal(7, @pe.port)
   end
 
-  def test_timeout
+  test "port setter basic functionality" do
+    assert_respond_to(@pe, :port=)
+    assert_nothing_raised{ @pe.port = 90 }
+    assert_equal(90, @pe.port)
+  end
+
+  test "timeout getter basic functionality" do
     assert_respond_to(@pe, :timeout)
-    assert_respond_to(@pe, :timeout=)
     assert_equal(5, @pe.timeout)
   end
 
-  def test_exception
+  test "timeout setter basic functionality" do
+    assert_respond_to(@pe, :timeout=)
+    assert_nothing_raised{ @pe.timeout = 30 }
+    assert_equal(30, @pe.timeout)
+  end
+
+  test "exception method basic functionality" do
     assert_respond_to(@pe, :exception)
-    assert_nothing_raised{ @pe.ping }
-    assert_nothing_raised{ @bad.ping }
     assert_nil(@pe.exception)
+  end
+
+  test "pinging a bogus host stores exception data" do
+    assert_nothing_raised{ @bad.ping? }
     assert_not_nil(@bad.exception)
   end
 
-  def test_warning
+  test "pinging a good host results in no exception data" do
+    assert_nothing_raised{ @pe.ping }
+    assert_nil(@pe.exception)
+  end
+
+  test "warning basic functionality" do
     assert_respond_to(@pe, :warning)
+    assert_nil(@pe.warning)
   end
 
   def teardown
