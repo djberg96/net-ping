@@ -1,3 +1,8 @@
+== 1.3.6 - 4-Sep-2010
+* Fixed variable naming issue in Net::Ping::External. Thanks go to taw
+  for the spot.
+* Added a default Rake task.
+
 == 1.3.5 - 3-Sep-2010
 * Allow for custom user agent in Net::Ping::HTTP. Thanks go to Michael
   Reinsch for the patch.

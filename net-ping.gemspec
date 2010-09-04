@@ -3,7 +3,7 @@ require 'rbconfig'
 
 Gem::Specification.new do |gem|
   gem.name      = 'net-ping'
-  gem.version   = '1.3.5'
+  gem.version   = '1.3.6'
   gem.license   = 'Artistic 2.0'
   gem.author    = 'Daniel J. Berger'
   gem.email     = 'djberg96@gmail.com'

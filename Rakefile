@@ -82,3 +82,5 @@ namespace 'test' do
      t.test_files = FileList['test/test_net_ping_wmi.rb']
   end
 end
+
+task :default => :test
