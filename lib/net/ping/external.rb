@@ -35,7 +35,7 @@ module Net
     def ping(host = @host)
       super(host)
 
-      input, output, error = ""
+      stdin, stdout, stderr = ""
       pstring = "ping "
       bool    = false
       orig_cp = nil
@@ -63,12 +63,12 @@ module Net
         err = nil
 
         Timeout.timeout(@timeout){
-          input, output, error = Open3.popen3(pstring)
-          err = error.gets # Can't chomp yet, might be nil
+          stdin, stdout, stderr = Open3.popen3(pstring)
+          err = stderr.gets # Can't chomp yet, might be nil
         }
 
-        input.close
-        error.close
+        stdin.close
+        stderr.close
 
         if CWINDOWS && GetConsoleCP() != orig_cp
           SetConsoleCP(orig_cp)
@@ -83,8 +83,8 @@ module Net
           end
         # The "no answer" response goes to stdout, not stderr, so check it
         else
-          lines = output.readlines
-          output.close
+          lines = stdout.readlines
+          stdout.close
           if lines.nil? || lines.empty?
             bool = true
           else
@@ -109,9 +109,9 @@ module Net
       rescue Exception => error
         @exception = error.message 
       ensure
-        input.close if input && !input.closed?
-        error.close if error && !error.closed?
-        output.close if output && !output.closed?
+        stdin.close  if stdin  && !stdin.closed?
+        stdout.close if stdout && !stdout.closed?
+        stderr.close if stderr && !stderr.closed?
       end
 
       # There is no duration if the ping failed
