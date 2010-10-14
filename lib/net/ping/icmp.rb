@@ -97,33 +97,36 @@ module Net
 
          begin
             Timeout.timeout(@timeout){
-               io_array = select([socket], nil, nil, timeout)
+              while true
+                 io_array = select([socket], nil, nil, timeout)
 
-               if io_array.nil? || io_array[0].empty?
-                  return false
-               end
+                 if io_array.nil? || io_array[0].empty?
+                    return false
+                 end
 
-               pid = nil
-               seq = nil
+                 pid = nil
+                 seq = nil
 
-               data, sender  = socket.recvfrom(1500)
-               port, host    = Socket.unpack_sockaddr_in(sender)
-               type, subcode = data[20, 2].unpack('C2')
+                 data, sender  = socket.recvfrom(1500)
+                 port, host    = Socket.unpack_sockaddr_in(sender)
+                 type, subcode = data[20, 2].unpack('C2')
 
-               case type
-                  when ICMP_ECHOREPLY
-                     if data.length >= 28
-                        pid, seq = data[24, 4].unpack('n3')
-                     end
-                  else
-                     if data.length > 56
-                        pid, seq = data[52, 4].unpack('n3')
-                     end
-               end
+                 case type
+                    when ICMP_ECHOREPLY
+                       if data.length >= 28
+                          pid, seq = data[24, 4].unpack('n3')
+                       end
+                    else
+                       if data.length > 56
+                          pid, seq = data[52, 4].unpack('n3')
+                       end
+                 end
 
-               if pid == @pid && seq == @seq && type == ICMP_ECHOREPLY
-                  bool = true
-               end
+                 if pid == @pid && seq == @seq && type == ICMP_ECHOREPLY
+                    bool = true
+                    break
+                 end
+              end
             }
          rescue Exception => err
             @exception = err
