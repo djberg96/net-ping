@@ -10,7 +10,7 @@ module Net
    #
    class Ping
       # The version of the net-ping library.
-      VERSION = '1.3.6'
+      VERSION = '1.3.7'
 
       # The host to ping. In the case of Ping::HTTP, this is the URI.
       attr_accessor :host
