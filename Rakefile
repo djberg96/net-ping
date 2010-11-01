@@ -2,9 +2,15 @@ require 'rake'
 require 'rake/testtask'
 include Config
 
+desc "Remove any .gem or .rbc files"
+task :clean do
+  Dir['*.gem'].each{ |f| File.delete(f) }
+  Dir['**/*.rbc'].each{ |f| File.delete(f) } # Rubinius
+end
+
 namespace 'gem' do
   desc 'Create the net-ping gem'
-  task :create do
+  task :create => [:clean] do
     spec = eval(IO.read('net-ping.gemspec'))
     Gem::Builder.new(spec).build
   end
