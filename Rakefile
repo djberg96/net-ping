@@ -1,12 +1,9 @@
 require 'rake'
+require 'rake/clean'
 require 'rake/testtask'
 include Config
 
-desc "Remove any .gem or .rbc files"
-task :clean do
-  Dir['*.gem'].each{ |f| File.delete(f) }
-  Dir['**/*.rbc'].each{ |f| File.delete(f) } # Rubinius
-end
+CLEAN.include("**/*.gem", "**/*.rbc")
 
 namespace 'gem' do
   desc 'Create the net-ping gem'
