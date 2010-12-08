@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('test-unit', '>= 2.0.9')
 
   # These dependencies are for Net::Ping::External
-  if Config::CONFIG['host_os'] =~ /mswin|dos|win32|cygwin|mingw/i &&
+  if Config::CONFIG['host_os'] =~ /mswin|dos|win32|windows|cygwin|mingw/i &&
     RUBY_PLATFORM != 'java'
   then
     gem.platform = Gem::Platform::CURRENT
