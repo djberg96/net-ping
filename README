@@ -2,11 +2,9 @@
    A collection of classes that provide different ways to ping computers.
 
 == Prerequisites
-   * Ruby 1.8.0 or later
    * The win32-open3 (1.8.x) and windows-pr libraries are required on
      MS Windows when using the Net::Ping::External class unless you're
      using JRuby.
-   * Windows 2000 or later is required to use the Ping::WMI class.
 
 == Installation
    gem install net-ping
@@ -36,8 +34,8 @@
    
 == Known Issues
    Older versions of Ruby 1.9.x may not work with UDP pings.
-   As of JRuby 1.5.1, UDP pings will return false positives because of an
-   incorrect error class being raised. See JRuby-4896.
+   Older versions of JRuby will return false positives in UDP pings
+   because of an incorrect error class being raised. See JRuby-4896.
 
 == License
    Artistic 2.0
