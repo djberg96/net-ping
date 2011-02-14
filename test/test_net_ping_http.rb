@@ -13,7 +13,7 @@ require 'net/ping/http'
 class TC_Net_Ping_HTTP < Test::Unit::TestCase
   def setup
     @uri  = 'http://www.google.com/index.html'
-    @http = Net::Ping::HTTP.new(@uri, 80, 30)      
+    @http = Net::Ping::HTTP.new(@uri, 80, 30)
     @bad  = Net::Ping::HTTP.new('http://www.blabfoobarurghxxxx.com') # One hopes not
   end
 
@@ -108,9 +108,45 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     assert_nil(@http.warning)
   end
 
+  test 'user_agent accessor is defined' do
+    assert_respond_to(@http, :user_agent)
+    assert_respond_to(@http, :user_agent=)
+  end
+
+  test 'user_agent defaults to nil' do
+    assert_nil(@http.user_agent)
+  end
+
   test 'ping with user agent' do
     @http.user_agent = "KDDI-CA32"
     assert_true(@http.ping)
+  end
+
+  test 'redirect_limit accessor is defined' do
+    assert_respond_to(@http, :redirect_limit)
+    assert_respond_to(@http, :redirect_limit=)
+  end
+
+  test 'redirect_limit defaults to 5' do
+    assert_equal(5, @http.redirect_limit)
+  end
+
+  test 'redirects succeed by default' do
+    @http = Net::Ping::HTTP.new("http://jigsaw.w3.org/HTTP/300/302.html")
+    assert_true(@http.ping)
+  end
+
+  test 'redirect fail if follow_redirect is set to false' do
+    @http = Net::Ping::HTTP.new("http://jigsaw.w3.org/HTTP/300/302.html")
+    @http.follow_redirect = false
+    assert_false(@http.ping)
+  end
+
+  test 'ping with redirect limit set to zero fails' do
+    @http = Net::Ping::HTTP.new("http://jigsaw.w3.org/HTTP/300/302.html")
+    @http.redirect_limit  = 0
+    assert_false(@http.ping)
+    assert_equal("Redirect limit exceeded", @http.exception)
   end
 
   def teardown
