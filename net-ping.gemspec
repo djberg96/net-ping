@@ -3,7 +3,7 @@ require 'rbconfig'
 
 Gem::Specification.new do |gem|
   gem.name      = 'net-ping'
-  gem.version   = '1.3.7'
+  gem.version   = '1.4.0'
   gem.license   = 'Artistic 2.0'
   gem.author    = 'Daniel J. Berger'
   gem.email     = 'djberg96@gmail.com'
@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.rubyforge_project = 'shards'
   gem.extra_rdoc_files  = ['README', 'CHANGES', 'doc/ping.txt']
 
-  gem.add_development_dependency('test-unit', '>= 2.0.9')
+  gem.add_development_dependency('test-unit', '>= 2.1.2')
 
   # These dependencies are for Net::Ping::External
   if Config::CONFIG['host_os'] =~ /mswin|dos|win32|windows|cygwin|mingw/i &&
