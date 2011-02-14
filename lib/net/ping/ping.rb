@@ -4,13 +4,13 @@ require 'timeout'
 # The Net module serves as a namespace only.
 #
 module Net
-   
+
    # The Ping class serves as an abstract base class for all other Ping class
    # types. You should not instantiate this class directly.
    #
    class Ping
       # The version of the net-ping library.
-      VERSION = '1.3.7'
+      VERSION = '1.4.0'
 
       # The host to ping. In the case of Ping::HTTP, this is the URI.
       attr_accessor :host
@@ -44,7 +44,7 @@ module Net
       # The default constructor for the Net::Ping class.  Accepts an optional
       # +host+, +port+ and +timeout+.  The port defaults to your echo port, or
       # 7 if that happens to be undefined.  The default timeout is 5 seconds.
-      # 
+      #
       # The host, although optional in the constructor, must be specified at
       # some point before the Net::Ping#ping method is called, or else an
       # ArgumentError will be raised.
@@ -64,7 +64,7 @@ module Net
 
          yield self if block_given?
       end
-      
+
       # The default interface for the Net::Ping#ping method.  Each subclass
       # should call super() before continuing with their own implementation in
       # order to ensure that the @exception and @warning instance variables
@@ -81,7 +81,7 @@ module Net
          @exception = nil
          @warning   = nil
       end
-      
+
       alias ping? ping
       alias pingecho ping
    end
