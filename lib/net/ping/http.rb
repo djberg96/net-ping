@@ -27,12 +27,15 @@ module Net
     # The user agent used for the HTTP request. The default is nil.
     attr_accessor :user_agent
 
-    # Creates and returns a new Ping::HTTP object.  Note that the default
-    # port for Ping::HTTP is 80.
+    # Creates and returns a new Ping::HTTP object. The default port is the
+    # port associated with the URI. The default timeout is 5 seconds.
     #
-    def initialize(uri=nil, port=80, timeout=5)
+    def initialize(uri=nil, port=nil, timeout=5)
       @follow_redirect = true
       @redirect_limit  = 5
+
+      port ||= URI.parse(uri).port if uri
+
       super(uri, port, timeout)
     end
 
@@ -63,9 +66,10 @@ module Net
         headers = { }
         headers["User-Agent"] = user_agent unless user_agent.nil?
         Timeout.timeout(@timeout) do
-          Net::HTTP.new(uri.host, @port).start do |http|
-            response = http.request_get(uri_path, headers)
-          end
+          http = Net::HTTP.new(uri.host, uri.port)
+          http.use_ssl = (uri.scheme == 'https')
+          request = Net::HTTP::Get.new(uri_path)
+          response = http.start{ |h| h.request(request) }
         end
       rescue Exception => err
         @exception = err.message

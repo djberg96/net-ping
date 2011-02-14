@@ -149,6 +149,17 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     assert_equal("Redirect limit exceeded", @http.exception)
   end
 
+  test 'ping against https site defaults to port 443' do
+    @http = Net::Ping::HTTP.new("https://encrypted.google.com/")
+    assert_equal(443, @http.port)
+  end
+
+  # This will generate a warning. Nothing I can do about it.
+  test 'ping against https site works as expected' do
+    @http = Net::Ping::HTTP.new("https://encrypted.google.com/")
+    assert_true(@http.ping)
+  end
+
   def teardown
     @uri  = nil
     @http = nil
