@@ -12,7 +12,16 @@ require 'net/ping/http'
 
 class TC_Net_Ping_HTTP < Test::Unit::TestCase
   def setup
-    @uri  = 'http://www.google.com/index.html'
+    @uri = 'http://www.google.com/index.html'
+    @uri_https = 'https://encrypted.google.com'
+
+    FakeWeb.register_uri(:get, @uri, :body => "PONG")
+    FakeWeb.register_uri(:get, @uri_https, :body => "PONG")
+    FakeWeb.register_uri(:get, "http://jigsaw.w3.org/HTTP/300/302.html", 
+                         :body => "PONG",
+                         :location => "#{@uri}",
+                         :status => ["302", "Found"])
+
     @http = Net::Ping::HTTP.new(@uri, 80, 30)
     @bad  = Net::Ping::HTTP.new('http://www.blabfoobarurghxxxx.com') # One hopes not
   end
@@ -150,13 +159,13 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
   end
 
   test 'ping against https site defaults to port 443' do
-    @http = Net::Ping::HTTP.new("https://encrypted.google.com/")
+    @http = Net::Ping::HTTP.new(@uri_https)
     assert_equal(443, @http.port)
   end
 
   # This will generate a warning. Nothing I can do about it.
   test 'ping against https site works as expected' do
-    @http = Net::Ping::HTTP.new("https://encrypted.google.com/")
+    @http = Net::Ping::HTTP.new(@uri_https)
     assert_true(@http.ping)
   end
 

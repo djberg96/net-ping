@@ -8,6 +8,7 @@ require 'test_net_ping_external'
 require 'test_net_ping_http'
 require 'test_net_ping_tcp'
 require 'test_net_ping_udp'
+require 'fakeweb'
 
 if Process.euid == 0
   require 'test_net_ping_icmp'
@@ -24,3 +25,5 @@ class TC_Net_Ping < Test::Unit::TestCase
     assert_equal('1.4.0', Net::Ping::VERSION)
   end
 end
+
+FakeWeb.allow_net_connect = false

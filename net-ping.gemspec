@@ -17,6 +17,7 @@ Gem::Specification.new do |gem|
   gem.extra_rdoc_files  = ['README', 'CHANGES', 'doc/ping.txt']
 
   gem.add_development_dependency('test-unit', '>= 2.1.2')
+  gem.add_development_dependency('fakeweb', '>= 1.3.0')
 
   # These dependencies are for Net::Ping::External
   if Config::CONFIG['host_os'] =~ /mswin|dos|win32|windows|cygwin|mingw/i &&
