@@ -13,8 +13,8 @@ include Net
 
 class TC_PingTCP < Test::Unit::TestCase
   def setup
-    @host = 'www.ruby-lang.org'
-    @port = 'ftp'
+    @host = 'localhost'
+    @port = 22
     @tcp  = Ping::TCP.new(@host, @port)
   end
 
@@ -81,7 +81,7 @@ class TC_PingTCP < Test::Unit::TestCase
   def test_port
     assert_respond_to(@tcp, :port)
     assert_respond_to(@tcp, :port=)
-    assert_equal('ftp', @tcp.port)
+    assert_equal(22, @tcp.port)
   end
 
   def test_timeout
