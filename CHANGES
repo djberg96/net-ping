@@ -1,3 +1,9 @@
+== 1.4.1 - ???
+* Incorporated changes from Lukas Zapletal that alters the icmp tests to use
+  your localhost instead of going outside the network.
+* The http tests were similarly modified courtesy of fakeweb, which is now a
+  development dependency. Again, change from Lukas Zapletal.
+
 == 1.4.0 - 14-Feb-2011
 * Added the redirect_limit accessor for the Net::Ping::HTTP class. This caps
   the number of redirects that are allowed before a ping is considered a
