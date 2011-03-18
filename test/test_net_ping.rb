@@ -10,13 +10,21 @@ require 'test_net_ping_tcp'
 require 'test_net_ping_udp'
 require 'fakeweb'
 
-if Process.euid == 0
-  require 'test_net_ping_icmp'
+if File::ALT_SEPARATOR
+  require 'win32/security'
+  require 'windows/system_info'
+  include Windows::SystemInfo
+
+  if windows_version >= 6 && Win32::Security.elevated_security?
+    require 'test_net_ping_icmp'
+  end
+else
+  if Process.euid == 0
+    require 'test_net_ping_icmp'
+  end
 end
 
-if Config::CONFIG['host_os'] =~ /mswin|win32|dos|cygwin|mingw|windows/i &&
-  RUBY_PLATFORM != 'java'
-then
+if File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
   require 'test_net_ping_wmi'
 end
 
