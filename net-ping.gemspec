@@ -25,9 +25,10 @@ Gem::Specification.new do |gem|
   then
     gem.platform = Gem::Platform::CURRENT
     gem.add_dependency('windows-pr', '>= 1.0.8')
+    gem.add_dependency('win32-security', '>= 1.0.8')
 
     if RUBY_VERSION.to_f < 1.9
-      gem.add_dependency('win32-open3', '>= 0.3.1') 
+      gem.add_dependency('win32-open3', '>= 0.3.1')
     end
   end
 
