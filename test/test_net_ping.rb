@@ -24,7 +24,7 @@ else
   end
 end
 
-if File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
+if File::ALT_SEPARATOR
   require 'test_net_ping_wmi'
 end
 
