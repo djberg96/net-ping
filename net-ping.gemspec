@@ -20,12 +20,10 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('fakeweb', '>= 1.3.0')
 
   # These dependencies are for Net::Ping::External
-  if Config::CONFIG['host_os'] =~ /mswin|dos|win32|windows|cygwin|mingw/i &&
-    RUBY_PLATFORM != 'java'
-  then
+  if File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
     gem.platform = Gem::Platform::CURRENT
     gem.add_dependency('windows-pr', '>= 1.0.8')
-    gem.add_dependency('win32-security', '>= 1.0.8')
+    gem.add_development_dependency('win32-security', '>= 1.0.8')
 
     if RUBY_VERSION.to_f < 1.9
       gem.add_dependency('win32-open3', '>= 0.3.1')
