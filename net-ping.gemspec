@@ -10,14 +10,15 @@ Gem::Specification.new do |gem|
   gem.homepage  = 'http://www.rubyforge.org/projects/shards'
   gem.summary   = 'A ping interface for Ruby.'
   gem.test_file = 'test/test_net_ping.rb'
-  gem.has_rdoc  = true
   gem.files     = Dir['**/*'].reject{ |f| f.include?('git') }
 
   gem.rubyforge_project = 'shards'
   gem.extra_rdoc_files  = ['README', 'CHANGES', 'doc/ping.txt']
 
+  gem.add_dependency('net-ldap', '~> 0.2.2')
   gem.add_development_dependency('test-unit', '>= 2.1.2')
   gem.add_development_dependency('fakeweb', '>= 1.3.0')
+  gem.add_development_dependency('fakeldap', '~> 0.0.1')
 
   # These dependencies are for Net::Ping::External
   if File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
@@ -32,7 +33,7 @@ Gem::Specification.new do |gem|
 
   gem.description = <<-EOF
     The net-ping library provides a ping interface for Ruby. It includes
-    separate TCP, HTTP, ICMP, UDP, WMI (for Windows) and external ping
+    separate TCP, HTTP, LDAP, ICMP, UDP, WMI (for Windows) and external ping
     classes.
   EOF
 end
