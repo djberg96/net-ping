@@ -17,7 +17,7 @@ module Net
       @encryption = (value.is_a? Symbol) ? value : value.to_sym
     end
 
-    # Creates and returns a new Ping::HTTP object. The default port is the
+    # Creates and returns a new Ping::LDAP object. The default port is the
     # port associated with the URI. The default timeout is 5 seconds.
     #
     def initialize(host=nil, timeout=5)
