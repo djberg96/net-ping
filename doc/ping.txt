@@ -43,6 +43,7 @@
    * Ping::HTTP
    * Ping::ICMP
    * Ping::WMI
+   * Ping::LDAP
 
    All Ping classes are children of the Ping parent class (which should
    never be instantiated directly).
@@ -134,6 +135,30 @@ Ping::WMI#ping(host, options={})
 
 Ping::WMI#ping?(host, options={})
    Returns whether or not the ping succeeded.
+
+== Ping::LDAP
+Ping::LDAP.new(uri=nil, timeout=5)
+   Performs a 'ping' to an LDAP server in the form of either an anonymous
+   or an authenticated LDAP bind.
+   Identical to Net::Ping.new except that, instead of a host, the first
+   argument is a URI.
+   The default +timeout+ is 5 seconds.
+  
+   +uri+ string is expected to be a full URI with scheme (ldap/ldaps)
+   and optionally the port (else default port is assumed) e.g.
+    ldap://my.ldap.host.com
+    ldap://my.ldap.host.com:1389
+    ldaps://my.ldap.host.com
+    ldaps://my.ldap.host.com:6636
+  
+  If a plain hostname is provided as the +uri+, a default port of 389 is assumed
+
+Ping::LDAP#encryption
+   Set/get the encyption method. By default is nil, but may be set to :simple_tls
+
+Ping::LDAP#username
+Ping::LDAP#password
+   set/get the username and password for ping using and authenticated bind.
 
 = Common Instance Methods
 Ping#exception
