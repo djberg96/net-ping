@@ -9,6 +9,7 @@
 * examples/example_pingudp.rb
 * lib/net/ping.rb
 * lib/net/ping/icmp.rb
+* lib/net/ping/ldap.rb
 * lib/net/ping/tcp.rb
 * lib/net/ping/udp.rb
 * lib/net/ping/wmi.rb
@@ -17,6 +18,7 @@
 * test/test_net_ping_external.rb
 * test/test_net_ping_http.rb
 * test/test_net_ping_icmp.rb
+* test/test_net_ping_ldap.rb
 * test/test_net_ping_tcp.rb
 * test/test_net_ping_udp.rb
 * test/test_net_ping_wmi.rb
