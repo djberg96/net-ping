@@ -33,7 +33,8 @@ class TC_Net_Ping_LDAP < Test::Unit::TestCase
     @ldap = Net::Ping::LDAP.new(@@uri, @@timeout)
     @ldap.username = @@cn
     @ldap.password = @@password
-    @bad  = Net::Ping::LDAP.new('ldap://blabfoobarurghxxxx.com') # One hopes not
+    @bogus = 'ldap://blabfoobarurghxxxx.com' # One hopes so
+    @bad  = Net::Ping::LDAP.new(@bogus)
   end
 
   def teardown
@@ -78,6 +79,13 @@ class TC_Net_Ping_LDAP < Test::Unit::TestCase
 
   test 'duration is nil on an unsuccessful ping' do
     assert_false(@bad.ping)
+    assert_nil(@ldap.duration)
+  end
+
+  test "duration is unset if a bad ping follows a good ping" do
+    assert_true{ @ldap.ping }
+    assert_not_nil(@ldap.duration)
+    assert_false(@ldap.ping?(@bogus))
     assert_nil(@ldap.duration)
   end
 
