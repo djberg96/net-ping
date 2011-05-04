@@ -59,6 +59,13 @@ class TC_Net_Ping_External < Test::Unit::TestCase
     assert_kind_of(Float, @pe.duration)
   end
 
+  test "duration is unset if a bad ping follows a good ping" do
+    assert_nothing_raised{ @pe.ping }
+    assert_not_nil(@pe.duration)
+    assert_false(@pe.ping?(@bogus))
+    assert_nil(@pe.duration)
+  end
+
   test "host getter basic functionality" do
     assert_respond_to(@pe, :host)
     assert_equal('www.ruby-lang.org', @pe.host)

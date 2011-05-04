@@ -80,6 +80,7 @@ module Net
          raise ArgumentError, 'no host specified' unless host
          @exception = nil
          @warning   = nil
+         @duration  = nil
       end
 
       alias ping? ping
