@@ -1,3 +1,9 @@
+== 1.5.0 - 3-May-2011
+* Added the Net::Ping::LDAP class which allows you to perform LDAP pings.
+  Thanks go to Paul Gallagher for adding this.
+* The duration instance variable is now reset to nil on a failed ping. Again,
+  thanks go to Paul Gallagher.
+
 == 1.4.1 - 17-Mar-2011
 * Incorporated changes from Lukas Zapletal that alters the icmp tests to use
   your localhost instead of going outside the network.
