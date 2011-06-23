@@ -12,7 +12,7 @@ require 'net/ping/external'
 
 class TC_Net_Ping_External < Test::Unit::TestCase
   def setup
-    @host  = 'www.ruby-lang.org'
+    @host  = 'localhost'
     @bogus = 'foo.bar.baz'
     @pe    = Net::Ping::External.new(@host)
     @bad   = Net::Ping::External.new(@bogus)
@@ -68,7 +68,7 @@ class TC_Net_Ping_External < Test::Unit::TestCase
 
   test "host getter basic functionality" do
     assert_respond_to(@pe, :host)
-    assert_equal('www.ruby-lang.org', @pe.host)
+    assert_equal('localhost', @pe.host)
   end
 
   test "host setter basic functionality" do
