@@ -1,7 +1,9 @@
 require 'rbconfig'
 require File.join(File.dirname(__FILE__), 'ping')
 
-if Config::CONFIG['host_os'] =~ /mswin|win32|msdos|cygwin|mingw|windows/i &&
+RbConfig = Config unless Object.const_defined?(:RbConfig)
+
+if RbConfig::CONFIG['host_os'] =~ /mswin|win32|msdos|cygwin|mingw|windows/i &&
   RUBY_PLATFORM != 'java'
 then
   if RUBY_VERSION.to_f < 1.9
@@ -18,7 +20,7 @@ module Net
   # The Ping::External class encapsulates methods for external (system) pings.
   class Ping::External < Ping
 
-    CWINDOWS = Config::CONFIG['host_os'] =~ /mswin|win32|msdos|cygwin|mingw|windows/i &&
+    CWINDOWS = RbConfig::CONFIG['host_os'] =~ /mswin|win32|msdos|cygwin|mingw|windows/i &&
       RUBY_PLATFORM != 'java'
       
     if CWINDOWS
@@ -40,7 +42,7 @@ module Net
       bool    = false
       orig_cp = nil
        
-      case Config::CONFIG['host_os']
+      case RbConfig::CONFIG['host_os']
         when /linux|bsd|osx|mach|darwin/i
           pstring += "-c 1 #{host}"
         when /solaris|sunos/i
