@@ -1,7 +1,7 @@
 require 'rake'
 require 'rake/clean'
 require 'rake/testtask'
-include Config
+include Object.const_defined?(:RbConfig) ? RbConfig : Config
 
 CLEAN.include("**/*.gem", "**/*.rbc")
 
