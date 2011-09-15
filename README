@@ -2,9 +2,9 @@
    A collection of classes that provide different ways to ping computers.
 
 == Prerequisites
-   * The win32-open3 (1.8.x) and windows-pr libraries are required on
-     MS Windows when using the Net::Ping::External class unless you're
-     using JRuby.
+   The win32-open3 (1.8.x) and windows-pr libraries are required on
+   MS Windows when using the Net::Ping::External class unless you're
+   using JRuby.
 
 == Installation
    gem install net-ping
