@@ -1,3 +1,7 @@
+== 1.5.1 - 15-Sep-2011
+* Use RbConfig on Ruby 1.9 and later. Thanks go to Torsten Schönebaum
+  for the patch.
+
 == 1.5.0 - 3-May-2011
 * Added the Net::Ping::LDAP class which allows you to perform LDAP pings.
   Thanks go to Paul Gallagher for adding this.
