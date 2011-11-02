@@ -27,12 +27,16 @@ module Net
     # The user agent used for the HTTP request. The default is nil.
     attr_accessor :user_agent
 
+    # OpenSSL certificate verification mode. The default is VERIFY_NONE.
+    attr_accessor :ssl_verify_mode
+
     # Creates and returns a new Ping::HTTP object. The default port is the
     # port associated with the URI. The default timeout is 5 seconds.
     #
     def initialize(uri=nil, port=nil, timeout=5)
       @follow_redirect = true
       @redirect_limit  = 5
+      @ssl_verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       port ||= URI.parse(uri).port if uri
 
@@ -67,7 +71,10 @@ module Net
         headers["User-Agent"] = user_agent unless user_agent.nil?
         Timeout.timeout(@timeout) do
           http = Net::HTTP.new(uri.host, uri.port)
-          http.use_ssl = (uri.scheme == 'https')
+          if uri.scheme == 'https'
+            http.use_ssl = true
+            http.verify_mode = @ssl_verify_mode
+          end
           request = Net::HTTP::Get.new(uri_path)
           response = http.start{ |h| h.request(request) }
         end

@@ -163,7 +163,6 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     assert_equal(443, @http.port)
   end
 
-  # This will generate a warning. Nothing I can do about it.
   test 'ping against https site works as expected' do
     @http = Net::Ping::HTTP.new(@uri_https)
     assert_true(@http.ping)
