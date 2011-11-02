@@ -1,3 +1,9 @@
+== 1.5.2 - ???
+* Added the ssl_verify_mode accessor to the Net::Ping::HTTP class, which
+  defaults to VERIFY_NONE. This fixes possible warnings resulting from
+  missing SSL certificates when using https. Thanks go to Balazs Kutil
+  for the patch.
+
 == 1.5.1 - 15-Sep-2011
 * Use RbConfig on Ruby 1.9 and later. Thanks go to Torsten Schönebaum
   for the patch.
