@@ -1,4 +1,7 @@
-== 1.5.2 - ???
+== 1.5.2 - 4-Nov-2011
+* The Net::Ping::HTTP class now defaults to using HEAD instead of GET
+  for its ping test. You can alter this via the get_request accessor.
+  Thanks got to Balazs Kutil for the patch.
 * Added the ssl_verify_mode accessor to the Net::Ping::HTTP class, which
   defaults to VERIFY_NONE. This fixes possible warnings resulting from
   missing SSL certificates when using https. Thanks go to Balazs Kutil
