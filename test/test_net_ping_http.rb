@@ -16,8 +16,9 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     @uri_https = 'https://encrypted.google.com'
 
     FakeWeb.register_uri(:get, @uri, :body => "PONG")
-    FakeWeb.register_uri(:get, @uri_https, :body => "PONG")
-    FakeWeb.register_uri(:get, "http://jigsaw.w3.org/HTTP/300/302.html", 
+    FakeWeb.register_uri(:head, @uri, :body => "PONG")
+    FakeWeb.register_uri(:head, @uri_https, :body => "PONG")
+    FakeWeb.register_uri(:head, "http://jigsaw.w3.org/HTTP/300/302.html",
                          :body => "PONG",
                          :location => "#{@uri}",
                          :status => ["302", "Found"])
@@ -165,6 +166,12 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
 
   test 'ping against https site works as expected' do
     @http = Net::Ping::HTTP.new(@uri_https)
+    assert_true(@http.ping)
+  end
+
+  test 'ping with get option' do
+    @http = Net::Ping::HTTP.new(@uri)
+    @http.get_request = true
     assert_true(@http.ping)
   end
 

@@ -30,6 +30,9 @@ module Net
     # OpenSSL certificate verification mode. The default is VERIFY_NONE.
     attr_accessor :ssl_verify_mode
 
+    # Use GET request instead HEAD. The default is false.
+    attr_accessor :get_request
+
     # Creates and returns a new Ping::HTTP object. The default port is the
     # port associated with the URI. The default timeout is 5 seconds.
     #
@@ -37,6 +40,7 @@ module Net
       @follow_redirect = true
       @redirect_limit  = 5
       @ssl_verify_mode = OpenSSL::SSL::VERIFY_NONE
+      @get_request = false
 
       port ||= URI.parse(uri).port if uri
 
@@ -64,51 +68,35 @@ module Net
 
       start_time = Time.now
 
-      begin
-        response = nil
-        uri_path = uri.path.empty? ? '/' : uri.path
-        headers = { }
-        headers["User-Agent"] = user_agent unless user_agent.nil?
-        Timeout.timeout(@timeout) do
-          http = Net::HTTP.new(uri.host, uri.port)
-          if uri.scheme == 'https'
-            http.use_ssl = true
-            http.verify_mode = @ssl_verify_mode
+      response = do_ping(uri)
+
+      if response.is_a?(Net::HTTPSuccess)
+        bool = true
+      elsif redirect?(response) # Check code, HTTPRedirection does not always work
+        if @follow_redirect
+          @warning = response.message
+          rlimit = 0
+
+          while redirect?(response)
+            if rlimit >= redirect_limit
+              @exception = "Redirect limit exceeded"
+              break
+            end
+            redirect = URI.parse(response['location'])
+            redirect = uri + redirect if redirect.relative?
+            response = do_ping(redirect)
+            rlimit += 1
           end
-          request = Net::HTTP::Get.new(uri_path)
-          response = http.start{ |h| h.request(request) }
-        end
-      rescue Exception => err
-        @exception = err.message
-      else
-        if response.is_a?(Net::HTTPSuccess)
-          bool = true
-        else
-          if @follow_redirect
-            @warning = response.message
-            rlimit = 0
 
-            # Any response code in the 300 range is a redirect
-            while response.code.to_i >= 300 && response.code.to_i < 400
-              if rlimit >= redirect_limit
-                @exception = "Redirect limit exceeded"
-                break
-              end
-              redirect = URI.parse(response['location'])
-              redirect = uri + redirect if redirect.relative?
-              response = Net::HTTP.get_response(redirect.host, redirect.path, @port)
-              rlimit += 1
-            end
-
-            if response.is_a?(Net::HTTPSuccess)
-              bool = true
-            else
-              @warning = nil
-              @exception ||= response.message
-            end
+          if response.is_a?(Net::HTTPSuccess)
+            bool = true
           else
-            @exception = response.message
+            @warning = nil
+            @exception ||= response.message
           end
+
+        else
+          @exception = response.message
         end
       end
 
@@ -123,5 +111,39 @@ module Net
     alias follow_redirect? follow_redirect
     alias uri host
     alias uri= host=
+
+    private
+
+    def redirect?(response)
+      response && response.code.to_i >= 300 && response.code.to_i < 400
+    end
+
+    def do_ping(uri)
+      response = nil
+      begin
+        uri_path = uri.path.empty? ? '/' : uri.path
+        headers = { }
+        headers["User-Agent"] = user_agent unless user_agent.nil?
+        Timeout.timeout(@timeout) do
+          http = Net::HTTP.new(uri.host, uri.port)
+
+          if uri.scheme == 'https'
+            http.use_ssl = true
+            http.verify_mode = @ssl_verify_mode
+          end
+
+          if @get_request == true
+            request = Net::HTTP::Get.new(uri_path)
+          else
+            request = Net::HTTP::Head.new(uri_path)
+          end
+
+          response = http.start{ |h| h.request(request) }
+        end
+      rescue Exception => err
+        @exception = err.message
+      end
+      response
+    end
   end
 end
