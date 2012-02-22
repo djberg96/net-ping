@@ -1,17 +1,13 @@
 require 'rbconfig'
 require File.join(File.dirname(__FILE__), 'ping')
 
-RbConfig = Config unless Object.const_defined?(:RbConfig)
-
-if RbConfig::CONFIG['host_os'] =~ /mswin|win32|msdos|cygwin|mingw|windows/i &&
-  RUBY_PLATFORM != 'java'
-then
+if File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
   if RUBY_VERSION.to_f < 1.9
     require 'win32/open3'
   end
   require 'windows/console'
 else
-  require 'open3'            
+  require 'open3'
 end
 
 # The Net module serves as a namespace only.
@@ -20,28 +16,27 @@ module Net
   # The Ping::External class encapsulates methods for external (system) pings.
   class Ping::External < Ping
 
-    CWINDOWS = RbConfig::CONFIG['host_os'] =~ /mswin|win32|msdos|cygwin|mingw|windows/i &&
-      RUBY_PLATFORM != 'java'
-      
+    CWINDOWS = File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
+
     if CWINDOWS
       include Windows::Console
-    end 
-   
+    end
+
     # Pings the host using your system's ping utility and checks for any
     # errors or warnings. Returns true if successful, or false if not.
-    # 
+    #
     # If the ping failed then the Ping::External#exception method should
     # contain a string indicating what went wrong. If the ping succeeded then
     # the Ping::External#warning method may or may not contain a value.
-    # 
+    #
     def ping(host = @host)
       super(host)
 
-      stdin, stdout, stderr = ""
+      stdin = stdout = stderr = nil
       pstring = "ping "
       bool    = false
       orig_cp = nil
-       
+
       case RbConfig::CONFIG['host_os']
         when /linux|bsd|osx|mach|darwin/i
           pstring += "-c 1 #{host}"
@@ -58,9 +53,9 @@ module Net
         else
           pstring += "#{host}"
       end
-       
+
       start_time = Time.now
-       
+
       begin
         err = nil
 
@@ -75,7 +70,7 @@ module Net
         if CWINDOWS && GetConsoleCP() != orig_cp
           SetConsoleCP(orig_cp)
         end
-      
+
         unless err.nil?
           if err =~ /warning/i
             @warning = err.chomp
@@ -109,7 +104,7 @@ module Net
           end
         end
       rescue Exception => error
-        @exception = error.message 
+        @exception = error.message
       ensure
         stdin.close  if stdin  && !stdin.closed?
         stdout.close if stdout && !stdout.closed?
