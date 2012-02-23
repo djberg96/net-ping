@@ -1,11 +1,10 @@
+require 'ffi'
 require 'rbconfig'
+
 require File.join(File.dirname(__FILE__), 'ping')
 
-if File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
-  if RUBY_VERSION.to_f < 1.9
-    require 'win32/open3'
-  end
-  require 'windows/console'
+if File::ALT_SEPARATOR && RUBY_VERSION.to_f < 1.9 && RUBY_PLATFORM != 'java'
+  require 'win32/open3'
 else
   require 'open3'
 end
@@ -16,10 +15,12 @@ module Net
   # The Ping::External class encapsulates methods for external (system) pings.
   class Ping::External < Ping
 
-    CWINDOWS = File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
+    if File::ALT_SEPARATOR
+      extend FFI::Library
+      ffi_lib 'kernel32'
 
-    if CWINDOWS
-      include Windows::Console
+      attach_function :SetConsoleCP, [:uint], :bool
+      attach_function :GetConsoleCP, [], :uint
     end
 
     # Pings the host using your system's ping utility and checks for any
@@ -45,10 +46,8 @@ module Net
         when /hpux/i
           pstring += "#{host} -n 1"
         when /win32|windows|msdos|mswin|cygwin|mingw/i
-          if RUBY_PLATFORM != 'java'
-            orig_cp = GetConsoleCP()
-            SetConsoleCP(437) if orig_cp != 437 # United States
-          end
+          orig_cp = GetConsoleCP()
+          SetConsoleCP(437) if orig_cp != 437 # United States
           pstring += "-n 1 #{host}"
         else
           pstring += "#{host}"
@@ -67,7 +66,7 @@ module Net
         stdin.close
         stderr.close
 
-        if CWINDOWS && GetConsoleCP() != orig_cp
+        if File::ALT_SEPARATOR && GetConsoleCP() != orig_cp
           SetConsoleCP(orig_cp)
         end
 
