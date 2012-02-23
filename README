@@ -6,6 +6,8 @@
    MS Windows when using the Net::Ping::External class unless you're
    using JRuby.
 
+   JRuby users should use 1.6.7 or later.
+
 == Installation
    gem install net-ping
 
@@ -34,8 +36,12 @@
    
 == Known Issues
    Older versions of Ruby 1.9.x may not work with UDP pings.
+
    Older versions of JRuby will return false positives in UDP pings
    because of an incorrect error class being raised. See JRuby-4896.
+
+   JRuby 1.6.7 or later is required for external pings because of a bug
+   in earlier versions with open3 and stream handling.
 
 == License
    Artistic 2.0
