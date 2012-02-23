@@ -1,3 +1,9 @@
+== 1.5.3 - ???
+* Removed the Windows::Console dependency and replaced it with FFI since there
+  were only two functions needed. This had the nice side effect of making it
+  work with JRuby, too.
+* Minor cleanup on some multi-variable assignment.
+
 == 1.5.2 - 4-Nov-2011
 * The Net::Ping::HTTP class now defaults to using HEAD instead of GET
   for its ping test. You can alter this via the get_request accessor.
