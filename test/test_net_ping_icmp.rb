@@ -50,6 +50,10 @@ class TC_PingICMP < Test::Unit::TestCase
     assert_boolean(@icmp.pingecho(@host))
   end
 
+  def test_ping_expected_success
+    assert_true(Ping::ICMP.new(@host).ping?)
+  end
+
   def test_ping_expected_failure
     assert_false(Ping::ICMP.new('bogus').ping?)
     assert_false(Ping::ICMP.new('http://www.asdfhjklasdfhlkj.com').ping?)
