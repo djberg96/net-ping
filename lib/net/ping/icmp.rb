@@ -14,7 +14,7 @@ module Net
     ICMP_ECHOREPLY = 0 # Echo reply
     ICMP_ECHO      = 8 # Echo request
     ICMP_SUBCODE   = 0
-      
+
     # You cannot set or change the port value. A value of 0 is always
     # used internally for ICMP pings.
     #
@@ -67,7 +67,7 @@ module Net
       @bind_host = host
       @bind_port = port
     end
-      
+
     # Pings the +host+ specified in this method or in the constructor.  If a
     # host was not specified either here or in the constructor, an
     # ArgumentError is raised.
@@ -86,7 +86,7 @@ module Net
         saddr = Socket.pack_sockaddr_in(@bind_port, @bind_host)
         socket.bind(saddr)
       end
-         
+
       @seq = (@seq + 1) % 65536
       pstring = 'C2 n3 A' << @data_size.to_s
       timeout = @timeout
@@ -103,7 +103,7 @@ module Net
         socket.close unless socket.closed?
         return bool
       end
-         
+
       start_time = Time.now
 
       socket.send(msg, 0, saddr) # Send the message
@@ -120,9 +120,8 @@ module Net
             pid = nil
             seq = nil
 
-            data, sender  = socket.recvfrom(1500)
-            port, host    = Socket.unpack_sockaddr_in(sender)
-            type, subcode = data[20, 2].unpack('C2')
+            data = socket.recvfrom(1500).first
+            type = data[20, 2].unpack('C2').first
 
             case type
               when ICMP_ECHOREPLY
@@ -146,7 +145,7 @@ module Net
       ensure
         socket.close if socket
       end
-     
+
       # There is no duration if the ping failed
       @duration = Time.now - start_time if bool
 
@@ -176,6 +175,6 @@ module Net
 
       check = (check >> 16) + (check & 0xffff)
       return (~((check >> 16) + check) & 0xffff)
-    end   
+    end
   end
 end
