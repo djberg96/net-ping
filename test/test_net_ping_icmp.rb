@@ -28,7 +28,7 @@ end
 
 class TC_PingICMP < Test::Unit::TestCase
   def setup
-    @host = 'localhost'
+    @host = '127.0.0.1' # 'localhost'
     @icmp = Ping::ICMP.new(@host)
   end
 
@@ -74,7 +74,7 @@ class TC_PingICMP < Test::Unit::TestCase
   def test_host
     assert_respond_to(@icmp, :host)
     assert_respond_to(@icmp, :host=)
-    assert_equal('localhost', @icmp.host)
+    assert_equal(@host, @icmp.host)
   end
 
   def test_port
