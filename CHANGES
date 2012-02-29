@@ -1,8 +1,9 @@
-== 1.5.3 - ???
+== 1.5.3 - 29-Feb-2012
 * Removed the Windows::Console dependency and replaced it with FFI since there
   were only two functions needed. This had the nice side effect of making it
   work with JRuby, too.
 * Minor cleanup on some multi-variable assignment.
+* Fixed require statements and one test for 1.9.
 
 == 1.5.2 - 4-Nov-2011
 * The Net::Ping::HTTP class now defaults to using HEAD instead of GET
