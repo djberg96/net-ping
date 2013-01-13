@@ -5,7 +5,7 @@ require 'uri'
 
 # Force non-blocking Socket.getaddrinfo on Unix systems. Do not use on
 # Windows because it (ironically) causes blocking problems.
-unless File::ALT_SEPARATOR
+unless File::ALT_SEPARATOR or RUBY_VERSION >= "1.9.3"
   require 'resolv-replace'
 end
 
