@@ -1,3 +1,7 @@
+== 1.6.0 - ???
+* Split out the ldap portion of the code into its own library.
+* Don't require resolv-replace on Ruby 1.9.3 or later.
+ 
 == 1.5.3 - 29-Feb-2012
 * Removed the Windows::Console dependency and replaced it with FFI since there
   were only two functions needed. This had the nice side effect of making it
