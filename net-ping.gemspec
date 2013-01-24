@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
     spec.platform.version = nil
 
     # Used primarily for icmp pings.
-    spec.add_development_dependency('win32-security', '>= 1.0.8')
+    spec.add_development_dependency('win32-security', '>= 0.2.0')
 
     if RUBY_VERSION.to_f < 1.9
       spec.add_dependency('win32-open3', '>= 0.3.1')

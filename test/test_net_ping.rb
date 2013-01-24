@@ -12,10 +12,8 @@ require 'fakeweb'
 
 if File::ALT_SEPARATOR
   require 'win32/security'
-  require 'windows/system_info'
-  include Windows::SystemInfo
 
-  if windows_version >= 6 && Win32::Security.elevated_security?
+  if Win32::Security.elevated_security?
     require 'test_net_ping_icmp'
   end
 else
@@ -30,7 +28,7 @@ end
 
 class TC_Net_Ping < Test::Unit::TestCase
   def test_net_ping_version
-    assert_equal('1.5.2', Net::Ping::VERSION)
+    assert_equal('1.5.3', Net::Ping::VERSION)
   end
 end
 
