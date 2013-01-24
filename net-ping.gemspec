@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.license   = 'Artistic 2.0'
   spec.author    = 'Daniel J. Berger'
   spec.email     = 'djberg96@gmail.com'
-  spec.homepage  = 'http://www.rubyforge.org/projects/shards'
+  spec.homepage  = 'https://github.com/djberg96/net-ping'
   spec.summary   = 'A ping interface for Ruby.'
   spec.test_file = 'test/test_net_ping.rb'
   spec.files     = Dir['**/*'].reject{ |f| f.include?('git') }
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency('net-ldap', '~> 0.2.2')
   spec.add_dependency('ffi', '>= 1.0.0')
 
-  spec.add_development_dependency('test-unit', '>= 2.1.2')
+  spec.add_development_dependency('test-unit', '>= 2.5.0')
   spec.add_development_dependency('fakeweb', '>= 1.3.0')
   spec.add_development_dependency('fakeldap', '~> 0.0.1')
 
