@@ -5,10 +5,7 @@
 # run MS Windows.  You should run this test via the 'test' or
 # 'test:wmi' Rake task.
 #######################################################################
-require 'rubygems'
-gem 'test-unit'
-
-require 'test/unit'
+require 'test-unit'
 require 'net/ping/wmi'
 include Net
 

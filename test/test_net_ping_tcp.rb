@@ -4,10 +4,7 @@
 # Test case for the Net::PingTCP class. This test should be run via
 # the 'test' or 'test:tcp' Rake task.
 #####################################################################
-require 'rubygems'
-gem 'test-unit'
-
-require 'test/unit'
+require 'test-unit'
 require 'net/ping/tcp'
 include Net
 

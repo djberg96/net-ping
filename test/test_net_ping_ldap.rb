@@ -4,10 +4,7 @@
 # Test case for the Net::PingHTTP class. This should be run via the 'test' or
 # 'test:http' Rake task.
 #################################################################################
-require 'rubygems'
-gem 'test-unit'
-
-require 'test/unit'
+require 'test-unit'
 require 'net/ping/ldap'
 require 'fakeldap'
 

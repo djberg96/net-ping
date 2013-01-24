@@ -4,10 +4,7 @@
 # Test case for the Net::PingExternal class. Run this via the 'test' or
 # 'test:external' rake task.
 #########################################################################
-require 'rubygems'
-gem 'test-unit'
-
-require 'test/unit'
+require 'test-unit'
 require 'net/ping/external'
 
 class TC_Net_Ping_External < Test::Unit::TestCase

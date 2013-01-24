@@ -5,10 +5,7 @@
 # with root privileges on UNIX systems. This should be run via the
 # 'test' or 'test:icmp' Rake task.
 #######################################################################
-require 'rubygems'
-gem 'test-unit'
-
-require 'test/unit'
+require 'test-unit'
 require 'net/ping/icmp'
 include Net
 

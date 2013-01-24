@@ -7,10 +7,7 @@
 # If someone could provide me a host where a udp ping actually
 # works (with a service check), I would appreciate it. :)
 ########################################################################
-require 'rubygems'
-gem 'test-unit'
-
-require 'test/unit'
+require 'test-unit'
 require 'net/ping/udp'
 
 class TC_Net_Ping_UDP < Test::Unit::TestCase
