@@ -25,8 +25,6 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
                          :location => "#{@uri}",
                          :status => ["302", "Found"])
 
-    #FakeWeb.register_uri(:get, @proxy, :body => 'proxied!')
-    #FakeWeb.register_uri(:head, @proxy, :body => 'proxied!')
     FakeWeb.register_uri(:any, 'http://www.blabfoobarurghxxxx.com', :exception => SocketError)
 
     @http = Net::Ping::HTTP.new(@uri, 80, 30)
