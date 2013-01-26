@@ -184,6 +184,7 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     @http = Net::Ping::HTTP.new(@uri)
     @http.get_request = true
     assert_true(@http.ping)
+    assert_true(@http.proxied)
   end
 
   test 'ping with https proxy' do
@@ -191,6 +192,7 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     @http = Net::Ping::HTTP.new(@uri_https)
     @http.get_request = true
     assert_true(@http.ping)
+    assert_true(@http.proxied)
   end
 
   test 'ping with no_proxy' do
@@ -198,6 +200,7 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     @http = Net::Ping::HTTP.new(@uri)
     @http.get_request = true
     assert_true(@http.ping)
+    assert_false(@http.proxied)
   end
 
   def teardown

@@ -34,6 +34,9 @@ module Net
     # Use GET request instead HEAD. The default is false.
     attr_accessor :get_request
 
+    # was this ping proxied?
+    attr_accessor :proxied
+
     # Creates and returns a new Ping::HTTP object. The default port is the
     # port associated with the URI. The default timeout is 5 seconds.
     #
@@ -128,7 +131,7 @@ module Net
         headers["User-Agent"] = user_agent unless user_agent.nil?
         Timeout.timeout(@timeout) do
           http = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password).new(uri.host, uri.port)
-
+          @proxied = http.proxy?
           if @get_request == true
             request = Net::HTTP::Get.new(uri_path)
           else
