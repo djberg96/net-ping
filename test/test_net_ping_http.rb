@@ -10,16 +10,22 @@ require 'net/ping/http'
 
 class TC_Net_Ping_HTTP < Test::Unit::TestCase
   def setup
+    ENV['http_proxy'] = ENV['https_proxy'] = ENV['no_proxy'] = nil
     @uri = 'http://www.google.com/index.html'
     @uri_https = 'https://encrypted.google.com'
+    @proxy = 'http://username:password@proxymoxie:3128'
+    FakeWeb.allow_net_connect = false
 
     FakeWeb.register_uri(:get, @uri, :body => "PONG")
     FakeWeb.register_uri(:head, @uri, :body => "PONG")
     FakeWeb.register_uri(:head, @uri_https, :body => "PONG")
+    FakeWeb.register_uri(:get, @uri_https, :body => "PONG")
     FakeWeb.register_uri(:head, "http://jigsaw.w3.org/HTTP/300/302.html",
                          :body => "PONG",
                          :location => "#{@uri}",
                          :status => ["302", "Found"])
+
+    FakeWeb.register_uri(:any, 'http://www.blabfoobarurghxxxx.com', :exception => SocketError)
 
     @http = Net::Ping::HTTP.new(@uri, 80, 30)
     @bad  = Net::Ping::HTTP.new('http://www.blabfoobarurghxxxx.com') # One hopes not
@@ -171,6 +177,30 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     @http = Net::Ping::HTTP.new(@uri)
     @http.get_request = true
     assert_true(@http.ping)
+  end
+
+  test 'ping with http proxy' do
+    ENV['http_proxy'] = "http://proxymoxie:3128"
+    @http = Net::Ping::HTTP.new(@uri)
+    @http.get_request = true
+    assert_true(@http.ping)
+    assert_true(@http.proxied)
+  end
+
+  test 'ping with https proxy' do
+    ENV['https_proxy'] = "http://proxymoxie:3128"
+    @http = Net::Ping::HTTP.new(@uri_https)
+    @http.get_request = true
+    assert_true(@http.ping)
+    assert_true(@http.proxied)
+  end
+
+  test 'ping with no_proxy' do
+    ENV['no_proxy'] = "google.com"
+    @http = Net::Ping::HTTP.new(@uri)
+    @http.get_request = true
+    assert_true(@http.ping)
+    assert_false(@http.proxied)
   end
 
   def teardown

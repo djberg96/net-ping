@@ -2,6 +2,7 @@ require File.join(File.dirname(__FILE__), 'ping')
 require 'net/http'
 require 'net/https'
 require 'uri'
+require 'open-uri'
 
 # Force non-blocking Socket.getaddrinfo on Unix systems. Do not use on
 # Windows because it (ironically) causes blocking problems.
@@ -33,6 +34,9 @@ module Net
     # Use GET request instead HEAD. The default is false.
     attr_accessor :get_request
 
+    # was this ping proxied?
+    attr_accessor :proxied
+
     # Creates and returns a new Ping::HTTP object. The default port is the
     # port associated with the URI. The default timeout is 5 seconds.
     #
@@ -40,7 +44,7 @@ module Net
       @follow_redirect = true
       @redirect_limit  = 5
       @ssl_verify_mode = OpenSSL::SSL::VERIFY_NONE
-      @get_request = false
+      @get_request     = false
 
       port ||= URI.parse(uri).port if uri
 
@@ -64,7 +68,7 @@ module Net
     def ping(host = @host)
       super(host)
       bool = false
-      uri = URI.parse(host)
+      uri  = URI.parse(host)
 
       start_time = Time.now
 
@@ -75,7 +79,7 @@ module Net
       elsif redirect?(response) # Check code, HTTPRedirection does not always work
         if @follow_redirect
           @warning = response.message
-          rlimit = 0
+          rlimit   = 0
 
           while redirect?(response)
             if rlimit >= redirect_limit
@@ -85,13 +89,13 @@ module Net
             redirect = URI.parse(response['location'])
             redirect = uri + redirect if redirect.relative?
             response = do_ping(redirect)
-            rlimit += 1
+            rlimit   += 1
           end
 
           if response.is_a?(Net::HTTPSuccess)
             bool = true
           else
-            @warning = nil
+            @warning   = nil
             @exception ||= response.message
           end
 
@@ -120,25 +124,26 @@ module Net
 
     def do_ping(uri)
       response = nil
+      proxy    = uri.find_proxy || URI.parse("")
       begin
         uri_path = uri.path.empty? ? '/' : uri.path
-        headers = { }
+        headers  = { }
         headers["User-Agent"] = user_agent unless user_agent.nil?
         Timeout.timeout(@timeout) do
-          http = Net::HTTP.new(uri.host, uri.port)
-
-          if uri.scheme == 'https'
-            http.use_ssl = true
-            http.verify_mode = @ssl_verify_mode
-          end
-
+          http = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password).new(uri.host, uri.port)
+          @proxied = http.proxy?
           if @get_request == true
             request = Net::HTTP::Get.new(uri_path)
           else
             request = Net::HTTP::Head.new(uri_path)
           end
 
-          response = http.start{ |h| h.request(request) }
+          if uri.scheme == 'https'
+            http.use_ssl     = true
+            http.verify_mode = @ssl_verify_mode
+          end
+
+          response = http.start { |h| h.request(request) }
         end
       rescue Exception => err
         @exception = err.message
