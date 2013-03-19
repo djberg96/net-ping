@@ -15,12 +15,10 @@ Gem::Specification.new do |spec|
   spec.rubyforge_project = 'shards'
   spec.extra_rdoc_files  = ['README', 'CHANGES', 'doc/ping.txt']
 
-  spec.add_dependency('net-ldap', '~> 0.2.2')
   spec.add_dependency('ffi', '>= 1.0.0')
 
   spec.add_development_dependency('test-unit', '>= 2.5.0')
   spec.add_development_dependency('fakeweb', '>= 1.3.0')
-  spec.add_development_dependency('fakeldap', '~> 0.0.1')
 
   if File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
     spec.platform = Gem::Platform::CURRENT

@@ -39,11 +39,6 @@ namespace 'example' do
   task :udp do
      ruby '-Ilib examples/example_pingudp.rb'
   end
-
-  desc 'Run the ldap ping example program'
-  task :ldap do
-     ruby '-Ilib examples/example_pingldap.rb'
-  end
 end
 
 Rake::TestTask.new do |t|
@@ -88,12 +83,6 @@ namespace 'test' do
      t.warning = true
      t.verbose = true
      t.test_files = FileList['test/test_net_ping_wmi.rb']
-  end
-
-  Rake::TestTask.new('ldap') do |t|
-     t.warning = true
-     t.verbose = true
-     t.test_files = FileList['test/test_net_ping_ldap.rb']
   end
 end
 
