@@ -1,5 +1,5 @@
-== 1.6.0 - ???
-* Split out the ldap portion of the code into its own library.
+== 1.6.0 - 19-Mar-2013
+* Split out the ldap portion of the code into its own branch.
 * Don't require resolv-replace on Ruby 1.9.3 or later.
  
 == 1.5.3 - 29-Feb-2012
