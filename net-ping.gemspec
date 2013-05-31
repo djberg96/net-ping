@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency('test-unit', '>= 2.5.0')
   spec.add_development_dependency('fakeweb', '>= 1.3.0')
+  spec.add_development_dependency('rake')
 
   if File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
     spec.platform = Gem::Platform::CURRENT
