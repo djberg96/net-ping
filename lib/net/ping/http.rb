@@ -64,11 +64,16 @@ module Net
     # response is considered a failed ping.
     #
     # If no file or path is specified in the URI, then '/' is assumed.
+    # If no scheme is present in the URI, then 'http' is assumed.
     #
     def ping(host = @host)
       super(host)
       bool = false
-      uri  = URI.parse(host)
+
+      # See https://bugs.ruby-lang.org/issues/8645
+      host = "http://#{host}" unless host.include?("http")
+
+      uri = URI.parse(host)
 
       start_time = Time.now
 
