@@ -11,9 +11,9 @@ include Net
 
 class TC_Ping_WMI < Test::Unit::TestCase
    def self.startup
-      @@windows = Config::CONFIG['host_os'] =~ /mswin|win32|dos|cygwin|mingw/i
+      @@windows = File::ALT_SEPARATOR
    end
-   
+
    def setup
       @host = "www.ruby-lang.org"
       @wmi = Ping::WMI.new(@host) if @@windows
@@ -52,11 +52,11 @@ class TC_Ping_WMI < Test::Unit::TestCase
       assert_boolean(@wmi.ping?)
       assert_boolean(@wmi.ping?(@host))
    end
-   
+
    def test_ping_expected_failure
       omit_unless(@@windows, 'skipped on Unix platforms')
       assert_false(Ping::WMI.new('bogus').ping?)
-      assert_false(Ping::WMI.new('http://www.asdfhjklasdfhlkj.com').ping?)      
+      assert_false(Ping::WMI.new('http://www.asdfhjklasdfhlkj.com').ping?)
    end
 
    def test_exception
@@ -74,7 +74,7 @@ class TC_Ping_WMI < Test::Unit::TestCase
       @host = nil
       @wmi  = nil
    end
-   
+
    def self.shutdown
       @@windows = nil
    end
