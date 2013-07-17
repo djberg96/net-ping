@@ -3,6 +3,10 @@
 #
 # Test case for the Net::PingExternal class. Run this via the 'test' or
 # 'test:external' rake task.
+#
+# WARNING: I've noticed that test failures will occur if you're using
+# OpenDNS. This is apparently caused by them messing with upstream
+# replies for advertising purposes.
 #########################################################################
 require 'test-unit'
 require 'net/ping/external'
