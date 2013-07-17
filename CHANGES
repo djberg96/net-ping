@@ -1,3 +1,15 @@
+== 1.6.1 - 17-Jul-2013
+* Automatically set the scheme to "http" if not present when performing
+  HTTP pings. See https://bugs.ruby-lang.org/issues/8645 for an issue
+  with the uri library that led to this change. Thanks go to Preston Lee
+  for the spot.
+* Removed the windows/system_info dependency, since it added other
+  dependencies just to check the Windows version. Instead, I added a
+  helper file that adds some needed Windows functions using FFI.
+* Added some warning text to the Net::Ping::External tests for users
+  who are using OpenDNS. In short, you will probably get test failures
+  and surprising true results for bad hosts.
+
 == 1.6.0 - 19-Mar-2013
 * Split out the ldap portion of the code into its own branch.
 * Don't require resolv-replace on Ruby 1.9.3 or later.
