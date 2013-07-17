@@ -6,6 +6,8 @@
 * Removed the windows/system_info dependency, since it added other
   dependencies just to check the Windows version. Instead, I added a
   helper file that adds some needed Windows functions using FFI.
+* Added Rake as a development dependency because Bundler. Thanks to
+  Jean-Philippe Doyle for the patch.
 * Added some warning text to the Net::Ping::External tests for users
   who are using OpenDNS. In short, you will probably get test failures
   and surprising true results for bad hosts.
