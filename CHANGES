@@ -1,3 +1,11 @@
+== 1.6.2 - 8-Aug-2013
+* Fixed a bug in the ICMP ping helper module. Thanks go to Yuichi
+  Tsunematsu for the spot.
+* The win32-security library is not just a development dependency. Thanks
+  again go to Yuichi Tsunematsu for the spot.
+* Updated the icmp ping tests.
+* Updated the gemspec for MS Windows.
+
 == 1.6.1 - 17-Jul-2013
 * Automatically set the scheme to "http" if not present when performing
   HTTP pings. See https://bugs.ruby-lang.org/issues/8645 for an issue
