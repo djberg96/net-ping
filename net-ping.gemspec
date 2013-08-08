@@ -21,15 +21,16 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency('fakeweb', '>= 1.3.0')
   spec.add_development_dependency('rake')
 
-  if File::ALT_SEPARATOR && RUBY_PLATFORM != 'java'
-    spec.platform = Gem::Platform::CURRENT
-    spec.platform.cpu = 'universal'
+  if File::ALT_SEPARATOR
+    require 'rbconfig'
+    arch = RbConfig::CONFIG['build_os']
+    spec.platform = Gem::Platform.new(['universal', arch])
     spec.platform.version = nil
 
-    # Used primarily for icmp pings.
-    spec.add_development_dependency('win32-security', '>= 0.2.0')
+    # Used for icmp pings.
+    spec.add_dependency('win32-security', '>= 0.2.0')
 
-    if RUBY_VERSION.to_f < 1.9
+    if RUBY_VERSION.to_f < 1.9 && RUBY_PLATFORM != 'java'
       spec.add_dependency('win32-open3', '>= 0.3.1')
     end
   end
