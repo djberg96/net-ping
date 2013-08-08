@@ -15,16 +15,18 @@ module Windows
 
   private
 
-  def LOWORD(l)
-    l & 0xffff
-  end
+  class << self
+    def LOWORD(l)
+      l & 0xffff
+    end
 
-  def LOBYTE(w)
-    w & 0xff
-  end
+    def LOBYTE(w)
+      w & 0xff
+    end
 
-  def HIBYTE(w)
-    w >> 8
+    def HIBYTE(w)
+      w >> 8
+    end
   end
 
   module_function :version
