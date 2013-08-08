@@ -7,14 +7,11 @@
 #######################################################################
 require 'test-unit'
 require 'net/ping/icmp'
-include Net
 
 if File::ALT_SEPARATOR
   require 'win32/security'
-  require 'windows/system_info'
-  include Windows::SystemInfo
 
-  if windows_version >= 6 && !Win32::Security.elevated_security?
+  unless Win32::Security.elevated_security?
     raise "The test:icmp task must be run with elevated security rights"
   end
 else
@@ -26,86 +23,111 @@ end
 class TC_PingICMP < Test::Unit::TestCase
   def setup
     @host = '127.0.0.1' # 'localhost'
-    @icmp = Ping::ICMP.new(@host)
+    @icmp = Net::Ping::ICMP.new(@host)
   end
 
-  def test_ping
+  test "icmp ping basic functionality" do
     assert_respond_to(@icmp, :ping)
     assert_nothing_raised{ @icmp.ping }
+  end
+
+  test "icmp ping accepts a host" do
     assert_nothing_raised{ @icmp.ping(@host) }
   end
 
-  def test_ping_aliases_basic
+  test "icmp ping returns a boolean" do
+    assert_boolean(@icmp.ping)
+    assert_boolean(@icmp.ping(@host))
+  end
+
+  test "icmp ping of local host is successful" do
+    assert_true(Net::Ping::ICMP.new(@host).ping?)
+    assert_true(Net::Ping::ICMP.new('192.168.0.1').ping?)
+  end
+
+  test "ping? is an alias for ping" do
     assert_respond_to(@icmp, :ping?)
+    assert_alias_method(@icmp, :ping?, :ping)
+  end
+
+  test "pingecho is an alias for ping" do
     assert_respond_to(@icmp, :pingecho)
-    assert_nothing_raised{ @icmp.ping? }
-    assert_nothing_raised{ @icmp.ping?(@host) }
+    assert_alias_method(@icmp, :pingecho, :ping)
   end
 
-  def test_ping_returns_boolean
-    assert_boolean(@icmp.pingecho)
-    assert_boolean(@icmp.pingecho(@host))
+  test "icmp ping fails if host is invalid" do
+    assert_false(Net::Ping::ICMP.new('bogus').ping?)
+    assert_false(Net::Ping::ICMP.new('http://www.asdfhjklasdfhlkj.com').ping?)
   end
 
-  def test_ping_expected_success
-    assert_true(Ping::ICMP.new(@host).ping?)
-  end
-
-  def test_ping_expected_failure
-    assert_false(Ping::ICMP.new('bogus').ping?)
-    assert_false(Ping::ICMP.new('http://www.asdfhjklasdfhlkj.com').ping?)
-  end
-
-  def test_bind
+  test "bind method basic functionality" do
     assert_respond_to(@icmp, :bind)
     assert_nothing_raised{ @icmp.bind(Socket.gethostname) }
     assert_nothing_raised{ @icmp.bind(Socket.gethostname, 80) }
   end
 
-  def test_duration
+  test "duration method basic functionality" do
     assert_nothing_raised{ @icmp.ping }
     assert_respond_to(@icmp, :duration)
     assert_kind_of(Float, @icmp.duration)
   end
 
-  def test_host
+  test "host getter method basic functionality" do
     assert_respond_to(@icmp, :host)
-    assert_respond_to(@icmp, :host=)
     assert_equal(@host, @icmp.host)
   end
 
-  def test_port
+  test "host setter method basic functionality" do
+    assert_respond_to(@icmp, :host=)
+    assert_nothing_raised{ @icmp.host = '192.168.0.1' }
+    assert_equal(@icmp.host, '192.168.0.1')
+  end
+
+  test "port method basic functionality" do
     assert_respond_to(@icmp, :port)
     assert_equal(nil, @icmp.port)
   end
 
-  def test_timeout
+  test "timeout getter method basic functionality" do
     assert_respond_to(@icmp, :timeout)
-    assert_respond_to(@icmp, :timeout=)
     assert_equal(5, @icmp.timeout)
   end
 
-  def test_exception
+  test "timeout setter method basic functionality" do
+    assert_respond_to(@icmp, :timeout=)
+    assert_nothing_raised{ @icmp.timeout = 7 }
+    assert_equal(7, @icmp.timeout)
+  end
+
+  test "exception method basic functionality" do
     assert_respond_to(@icmp, :exception)
     assert_nothing_raised{ @icmp.ping }
+  end
+
+  test "exception method returns nil if no ping has happened yet" do
     assert_nil(@icmp.exception)
   end
 
-  def test_warning
+  test "warning method basic functionality" do
     assert_respond_to(@icmp, :warning)
   end
 
-  def test_data_size_get
+  test "data_size getter method basic functionality" do
     assert_respond_to(@icmp, :data_size)
+    assert_nothing_raised{ @icmp.data_size }
+    assert_kind_of(Numeric, @icmp.data_size)
+  end
+
+  test "data_size returns expected value" do
     assert_equal(56, @icmp.data_size)
   end
 
-  def test_data_size_set
+  test "data_size setter method basic functionality" do
     assert_respond_to(@icmp, :data_size=)
     assert_nothing_raised{ @icmp.data_size = 22 }
   end
 
-  def test_odd_data_size_ok
+  test "setting an odd data_size is valid" do
     assert_nothing_raised{ @icmp.data_size = 57 }
     assert_boolean(@icmp.ping)
   end
