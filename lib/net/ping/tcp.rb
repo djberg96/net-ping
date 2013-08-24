@@ -77,6 +77,8 @@ module Net
           else
             @exception = Errno::ECONNREFUSED
           end
+        else
+          bool = true
         end
       ensure
         sock.close if sock
