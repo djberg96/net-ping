@@ -11,14 +11,14 @@ module Net
 
     # Returns whether or not Errno::ECONNREFUSED is considered a successful
     # ping. The default is false.
-    # 
+    #
     def self.service_check
       @@service_check
     end
 
     # Sets whether or not an Errno::ECONNREFUSED should be considered a
     # successful ping.
-    # 
+    #
     def self.service_check=(bool)
       unless bool.kind_of?(TrueClass) || bool.kind_of?(FalseClass)
         raise ArgumentError, 'argument must be true or false'
@@ -29,11 +29,11 @@ module Net
     # This method attempts to ping a host and port using a TCPSocket with
     # the host, port and timeout values passed in the constructor.  Returns
     # true if successful, or false otherwise.
-    # 
+    #
     # Note that, by default, an Errno::ECONNREFUSED return result will be
     # considered a failed ping.  See the documentation for the
     # Ping::TCP.service_check= method if you wish to change this behavior.
-    # 
+    #
     def ping(host=@host)
       super(host)
 
@@ -42,25 +42,43 @@ module Net
       start_time = Time.now
 
       begin
-        Timeout.timeout(@timeout){
-          begin
-            tcp = TCPSocket.new(host, @port)
-          rescue Errno::ECONNREFUSED => err
-            if @@service_check
-              bool = true
-            else
-              @exception = err
-            end
-          rescue Exception => err
-            @exception = err
-          else
-            bool = true
-          end
-        }
-      rescue Timeout::Error => err
+        addr = Socket.getaddrinfo(host, port)
+      rescue SocketError => err
         @exception = err
+        bool = false
+        return
+      end
+
+      begin
+        # Where addr[0][0] is likely AF_INET.
+        sock = Socket.new(Socket.const_get(addr[0][0]), Socket::SOCK_STREAM, 0)
+
+        # This may not be entirely necessary
+        sock.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
+
+        begin
+          # Where addr[0][3] is an IP address
+          sock.connect_nonblock(Socket.pack_sockaddr_in(port, addr[0][3]))
+        rescue Errno::EINPROGRESS
+          # No-op, continue below
+        rescue Exception => err
+          # Something has gone horribly wrong
+          @exception = err
+          return false
+        end
+
+        resp = IO.select(nil, [sock], nil, timeout)
+
+        # Assume ECONNREFUSED at this point
+        if resp.nil?
+          if @@service_check
+            bool = true
+          else
+            @exception = Errno::ECONNREFUSED
+          end
+        end
       ensure
-        tcp.close if tcp
+        sock.close if sock
       end
 
       # There is no duration if the ping failed
@@ -71,13 +89,13 @@ module Net
 
     alias ping? ping
     alias pingecho ping
-      
+
     # Class method aliases. DEPRECATED.
     class << self
       alias econnrefused service_check
       alias econnrefused= service_check=
       alias ecr service_check
-      alias ecr= service_check=         
+      alias ecr= service_check=
     end
   end
 end
