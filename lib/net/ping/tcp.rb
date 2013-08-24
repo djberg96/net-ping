@@ -38,7 +38,6 @@ module Net
       super(host)
 
       bool = false
-      tcp = nil
       start_time = Time.now
 
       # Failure here most likely means bad host, so just bail.
