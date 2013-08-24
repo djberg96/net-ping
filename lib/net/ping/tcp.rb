@@ -41,6 +41,7 @@ module Net
       tcp = nil
       start_time = Time.now
 
+      # Failure here most likely means bad host, so just bail.
       begin
         addr = Socket.getaddrinfo(host, port)
       rescue SocketError => err
