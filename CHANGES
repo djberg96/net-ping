@@ -1,3 +1,8 @@
+== 1.6.3 - 25-Aug-2013
+* Replaced the main ping code for the Ping::TCP class. The timeout module
+  really doesn't work very well with sockets, and so a raw socket approach
+  combined with IO.select is now used instead.
+
 == 1.6.2 - 8-Aug-2013
 * Fixed a bug in the ICMP ping helper module. Thanks go to Yuichi
   Tsunematsu for the spot.
