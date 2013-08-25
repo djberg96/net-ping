@@ -48,7 +48,7 @@
    All Ping classes are children of the Ping parent class (which should
    never be instantiated directly).
 
-   The Ping::ICMP class requires root privileges on UNIX systems.
+   The Ping::ICMP class requires root/administrative privileges.
 
    The Ping::WMI class only works on MS Windows.
 
@@ -136,30 +136,6 @@ Ping::WMI#ping(host, options={})
 Ping::WMI#ping?(host, options={})
    Returns whether or not the ping succeeded.
 
-== Ping::LDAP
-Ping::LDAP.new(uri=nil, timeout=5)
-   Performs a 'ping' to an LDAP server in the form of either an anonymous
-   or an authenticated LDAP bind.
-   Identical to Net::Ping.new except that, instead of a host, the first
-   argument is a URI.
-   The default +timeout+ is 5 seconds.
-  
-   +uri+ string is expected to be a full URI with scheme (ldap/ldaps)
-   and optionally the port (else default port is assumed) e.g.
-    ldap://my.ldap.host.com
-    ldap://my.ldap.host.com:1389
-    ldaps://my.ldap.host.com
-    ldaps://my.ldap.host.com:6636
-  
-  If a plain hostname is provided as the +uri+, a default port of 389 is assumed
-
-Ping::LDAP#encryption
-   Set/get the encyption method. By default is nil, but may be set to :simple_tls
-
-Ping::LDAP#username
-Ping::LDAP#password
-   set/get the username and password for ping using and authenticated bind.
-
 = Common Instance Methods
 Ping#exception
    Returns the error string that was set if a ping call failed.  If an exception
@@ -242,10 +218,6 @@ Ping#warning
    You may see a test failure from the test_net_ping_tcp test case. You can
    ignore these.
    
-   The socket library that ships with the Windows One-Click installer has
-   known issues. This may cause the Ping::ICMP class to fail. In fact, I
-   make an effort to skip those tests if I detect the one-click installer.
-
    UDP pings may not work with older versions of Ruby 1.9.x.
 
    Please report any bugs on the project page at
@@ -263,7 +235,7 @@ Ping#warning
    Artistic 2.0
 
 = Copyright
-   (C) 2003-2010 Daniel J. Berger, All Rights Reserved
+   (C) 2003-2013 Daniel J. Berger, All Rights Reserved
 
 = Warranty
    This package is provided "as is" and without any express or
