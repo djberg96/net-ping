@@ -45,6 +45,9 @@
   JRuby 1.6.7 or later is required for external pings because of a bug
   in earlier versions with open3 and stream handling.
 
+  ICMP pings are not thread safe. See https://www.ruby-forum.com/topic/146116.
+  Patches welcome.
+
 == License
   Artistic 2.0
    
