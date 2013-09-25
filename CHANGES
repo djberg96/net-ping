@@ -1,3 +1,7 @@
+== 1.7.1 - ???
+* Fixed a bug in the Ping::TCP class where it could return nil instead
+  of false. Thanks go to Grandy Nguyen for the patch.
+
 == 1.7.0 - 25-Aug-2013
 * Now requires Ruby 1.9.x or later.
 * Replaced the main ping code for the Ping::TCP class. The timeout module
