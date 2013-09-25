@@ -45,8 +45,7 @@ module Net
         addr = Socket.getaddrinfo(host, port)
       rescue SocketError => err
         @exception = err
-        bool = false
-        return
+        return false
       end
 
       begin
