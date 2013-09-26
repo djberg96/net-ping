@@ -1,4 +1,4 @@
-== 1.7.1 - ???
+== 1.7.1 - 26-Sep-2013
 * Fixed a bug in the Ping::TCP class where it could return nil instead
   of false. Thanks go to Grandy Nguyen for the patch.
 
