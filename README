@@ -4,7 +4,6 @@
 == Prerequisites
   * ffi
   * win32-security (MS Windows only)
-  * win32-open3 (Ruby 1.8.x on MS Windows only. Not required for JRuby)
   * fakeweb (test only)
   * test-unit (test only)
 
