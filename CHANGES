@@ -1,3 +1,8 @@
+== 1.7.2 - ???
+* Removed win32-open3 require in the Ping::External class since it isn't
+  needed in Ruby 1.9.x or later.
+* Removed reference to win32-open3 in README.
+
 == 1.7.1 - 26-Sep-2013
 * Fixed a bug in the Ping::TCP class where it could return nil instead
   of false. Thanks go to Grandy Nguyen for the patch.
