@@ -75,9 +75,13 @@ module Net
 
       uri = URI.parse(host)
 
+      # A port provided here overrides anything provided in constructor
+      port = URI.split(host)[3] || @port
+      port = port.to_i
+
       start_time = Time.now
 
-      response = do_ping(uri)
+      response = do_ping(uri, port)
 
       if response.is_a?(Net::HTTPSuccess)
         bool = true
@@ -93,7 +97,7 @@ module Net
             end
             redirect = URI.parse(response['location'])
             redirect = uri + redirect if redirect.relative?
-            response = do_ping(redirect)
+            response = do_ping(redirect, port)
             rlimit   += 1
           end
 
@@ -127,7 +131,7 @@ module Net
       response && response.code.to_i >= 300 && response.code.to_i < 400
     end
 
-    def do_ping(uri)
+    def do_ping(uri, port)
       response = nil
       proxy    = uri.find_proxy || URI.parse("")
       begin
@@ -135,7 +139,7 @@ module Net
         headers  = { }
         headers["User-Agent"] = user_agent unless user_agent.nil?
         Timeout.timeout(@timeout) do
-          http = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password).new(uri.host, uri.port)
+          http = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password).new(uri.host, port)
           @proxied = http.proxy?
           if @get_request == true
             request = Net::HTTP::Get.new(uri_path)
