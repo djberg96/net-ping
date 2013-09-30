@@ -1,6 +1,6 @@
 == 1.7.2 - ???
 * Fixed a bug in the Ping::HTTP constructor where it was not honoring the
-  port if provided as the second argument. Thanks go to Florian Anderias
+  port if provided as the second argument. Thanks go to Florian Anderiasch
   for the spot.
 * Removed win32-open3 require in the Ping::External class since it isn't
   needed in Ruby 1.9.x or later.
