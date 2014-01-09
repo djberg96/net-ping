@@ -116,6 +116,8 @@ module Net
         else
           @exception = response.message
         end
+      else
+        @exception ||= response.message
       end
 
       # There is no duration if the ping failed

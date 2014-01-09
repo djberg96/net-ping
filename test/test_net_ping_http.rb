@@ -26,6 +26,9 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
                          :status => ["302", "Found"])
 
     FakeWeb.register_uri(:any, 'http://www.blabfoobarurghxxxx.com', :exception => SocketError)
+    FakeWeb.register_uri(:head, 'http://http502.com',
+                         :body => "",
+                         :status => ["502", "Bad Gateway"])
 
     @http = Net::Ping::HTTP.new(@uri, 80, 30)
     @bad  = Net::Ping::HTTP.new('http://www.blabfoobarurghxxxx.com') # One hopes not
@@ -166,6 +169,18 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     @http.redirect_limit  = 0
     assert_false(@http.ping)
     assert_equal("Redirect limit exceeded", @http.exception)
+  end
+
+  test 'http 502 sets exception' do
+    @http = Net::Ping::HTTP.new("http://http502.com")
+    assert_false(@http.ping)
+    assert_equal('Bad Gateway', @http.exception)
+  end
+
+  test 'http 502 sets code' do
+    @http = Net::Ping::HTTP.new("http://http502.com")
+    assert_false(@http.ping)
+    assert_equal('502', @http.code)
   end
 
   test 'ping against https site defaults to port 443' do
