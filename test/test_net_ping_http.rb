@@ -122,6 +122,11 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     assert_nil(@http.warning)
   end
 
+  test 'code attribute is set' do
+    assert_true(@http.ping)
+    assert_equal('200', @http.code)
+  end
+
   test 'user_agent accessor is defined' do
     assert_respond_to(@http, :user_agent)
     assert_respond_to(@http, :user_agent=)
