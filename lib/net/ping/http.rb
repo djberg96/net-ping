@@ -37,6 +37,10 @@ module Net
     # was this ping proxied?
     attr_accessor :proxied
 
+    # For unsuccessful requests that return a server error, it is
+    # useful to know the HTTP status code of the response.
+    attr_reader :code
+
     # Creates and returns a new Ping::HTTP object. The default port is the
     # port associated with the URI. The default timeout is 5 seconds.
     #
@@ -45,6 +49,7 @@ module Net
       @redirect_limit  = 5
       @ssl_verify_mode = OpenSSL::SSL::VERIFY_NONE
       @get_request     = false
+      @code            = nil
 
       port ||= URI.parse(uri).port if uri
 
@@ -111,6 +116,8 @@ module Net
         else
           @exception = response.message
         end
+      else
+        @exception ||= response.message
       end
 
       # There is no duration if the ping failed
@@ -157,6 +164,7 @@ module Net
       rescue Exception => err
         @exception = err.message
       end
+      @code = response.code if response
       response
     end
   end

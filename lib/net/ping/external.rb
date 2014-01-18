@@ -29,23 +29,23 @@ module Net
       super(host)
 
       stdin = stdout = stderr = nil
-      pstring = "ping "
+      pcmd    = ["ping"]
       bool    = false
       orig_cp = nil
 
       case RbConfig::CONFIG['host_os']
         when /linux|bsd|osx|mach|darwin/i
-          pstring += "-c 1 #{host}"
+          pcmd += ['-c1', host]
         when /solaris|sunos/i
-          pstring += "#{host} 1"
+          pcmd += [host, '1']
         when /hpux/i
-          pstring += "#{host} -n 1"
+          pcmd += [host, '-n1']
         when /win32|windows|msdos|mswin|cygwin|mingw/i
           orig_cp = GetConsoleCP()
           SetConsoleCP(437) if orig_cp != 437 # United States
-          pstring += "-n 1 #{host}"
+          pcmd += ['-n', '1', host]
         else
-          pstring += "#{host}"
+          pcmd += [host]
       end
 
       start_time = Time.now
@@ -54,7 +54,7 @@ module Net
         err = nil
 
         Timeout.timeout(@timeout){
-          stdin, stdout, stderr = Open3.popen3(pstring)
+          stdin, stdout, stderr = Open3.popen3(*pcmd)
           err = stderr.gets # Can't chomp yet, might be nil
         }
 
