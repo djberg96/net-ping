@@ -2,7 +2,6 @@ require File.join(File.dirname(__FILE__), 'ping')
 
 if File::ALT_SEPARATOR
   require 'win32/security'
-  require File.join(File.dirname(__FILE__), 'helper')
 end
 
 # The Net module serves as a namespace only.
@@ -31,7 +30,7 @@ module Net
     def initialize(host=nil, port=nil, timeout=5)
       raise 'requires root privileges' if Process.euid > 0
 
-      if File::ALT_SEPARATOR && Windows.version >= 6
+      if File::ALT_SEPARATOR
         unless Win32::Security.elevated_security?
           raise 'requires elevated security'
         end
