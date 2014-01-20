@@ -1,6 +1,6 @@
-require 'ffi'
 require 'open3'
 require 'rbconfig'
+require 'win32ole' if File::ALT_SEPARATOR
 
 require File.join(File.dirname(__FILE__), 'ping')
 
@@ -9,15 +9,6 @@ module Net
 
   # The Ping::External class encapsulates methods for external (system) pings.
   class Ping::External < Ping
-
-    if File::ALT_SEPARATOR
-      extend FFI::Library
-      ffi_lib 'kernel32'
-
-      attach_function :SetConsoleCP, [:uint], :bool
-      attach_function :GetConsoleCP, [], :uint
-    end
-
     # Pings the host using your system's ping utility and checks for any
     # errors or warnings. Returns true if successful, or false if not.
     #
@@ -41,8 +32,8 @@ module Net
         when /hpux/i
           pcmd += [host, '-n1']
         when /win32|windows|msdos|mswin|cygwin|mingw/i
-          orig_cp = GetConsoleCP()
-          SetConsoleCP(437) if orig_cp != 437 # United States
+          orig_cp = WIN32OLE.codepage
+          WIN32OLE.codepage = 437 if orig_cp != 437 # United States
           pcmd += ['-n', '1', host]
         else
           pcmd += [host]
@@ -61,8 +52,8 @@ module Net
         stdin.close
         stderr.close
 
-        if File::ALT_SEPARATOR && GetConsoleCP() != orig_cp
-          SetConsoleCP(orig_cp)
+        if File::ALT_SEPARATOR && WIN32OLE.codepage != orig_cp
+          WIN32OLE.codepage = orig_cp
         end
 
         unless err.nil?
