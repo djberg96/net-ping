@@ -4,6 +4,9 @@
   for the spot.
 * Removed win32-open3 require in the Ping::External class since it isn't
   needed in Ruby 1.9.x or later.
+* Use builtin WIN32OLE methods instead of FFI for Windows functions in the
+  Ping::External class.
+* Dropped support for Windows XP.
 * Removed reference to win32-open3 in README.
 
 == 1.7.1 - 26-Sep-2013
