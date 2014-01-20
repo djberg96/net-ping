@@ -3,7 +3,7 @@ require 'rbconfig'
 
 Gem::Specification.new do |spec|
   spec.name      = 'net-ping'
-  spec.version   = '1.7.1'
+  spec.version   = '1.7.2'
   spec.license   = 'Artistic 2.0'
   spec.author    = 'Daniel J. Berger'
   spec.email     = 'djberg96@gmail.com'
@@ -18,10 +18,8 @@ Gem::Specification.new do |spec|
   # The TCP Ping class requires this for non-blocking sockets.
   spec.required_ruby_version = ">= 1.9.1"
 
-  spec.add_dependency('ffi', '>= 1.0.0')
-
-  spec.add_development_dependency('test-unit', '>= 2.5.0')
-  spec.add_development_dependency('fakeweb', '>= 1.3.0')
+  spec.add_development_dependency('test-unit')
+  spec.add_development_dependency('fakeweb')
   spec.add_development_dependency('rake')
 
   if File::ALT_SEPARATOR
@@ -32,10 +30,6 @@ Gem::Specification.new do |spec|
 
     # Used for icmp pings.
     spec.add_dependency('win32-security', '>= 0.2.0')
-
-    if RUBY_VERSION.to_f < 1.9 && RUBY_PLATFORM != 'java'
-      spec.add_dependency('win32-open3', '>= 0.3.1')
-    end
   end
 
   spec.description = <<-EOF
