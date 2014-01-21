@@ -9,7 +9,6 @@
 * examples/example_pingudp.rb
 * lib/net/ping.rb
 * lib/net/ping/icmp.rb
-* lib/net/ping/ldap.rb
 * lib/net/ping/tcp.rb
 * lib/net/ping/udp.rb
 * lib/net/ping/wmi.rb
