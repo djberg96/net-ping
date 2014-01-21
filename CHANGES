@@ -1,12 +1,12 @@
-== 1.7.2 - ???
+== 1.7.2 - 21-Jan-2014
 * Fixed a bug in the Ping::HTTP constructor where it was not honoring the
   port if provided as the second argument. Thanks go to Florian Anderiasch
   for the spot.
 * Removed win32-open3 require in the Ping::External class since it isn't
   needed in Ruby 1.9.x or later.
-* Use builtin WIN32OLE methods instead of FFI for Windows functions in the
-  Ping::External class.
-* Dropped support for Windows XP.
+* Refactored the Ping::External class so that it checks the exit status rather
+  than try to parse output. Thanks go to Miguel Tubia for the suggestion.
+* Dropped explicit support for Windows XP.
 * Removed reference to win32-open3 in README.
 
 == 1.7.1 - 26-Sep-2013
