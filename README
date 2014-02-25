@@ -60,3 +60,6 @@
   If you installed this library via Rubygems, you can view the inline
   documentation via ri or fire up 'gem server', and point your browser at
   http://localhost:8808.
+
+== Author
+  Daniel J. Berger
