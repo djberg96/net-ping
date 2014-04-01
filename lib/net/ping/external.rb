@@ -27,7 +27,7 @@ module Net
         when /bsd|osx|mach|darwin/i
           pcmd += ['-c', '1', '-t', (@timeout).to_s, host]
         when /solaris|sunos/i
-          pcmd += [host, '1']
+          pcmd += [host, @timeout.to_s]
         when /hpux/i
           pcmd += [host, '-n1']
         when /win32|windows|msdos|mswin|cygwin|mingw/i
