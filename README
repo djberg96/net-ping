@@ -17,10 +17,6 @@
   attention to the documentation pertaining to ECONNREFUSED and TCP pings.
 
   Also note the documentation regarding down hosts.
-   
-  You do not need win32-open3 with Ruby 1.9.x. The open3 library that ships
-  as part of the Ruby standard library should work.
-
 == How to require net-ping
   You can do either this:
 

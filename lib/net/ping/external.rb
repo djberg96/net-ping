@@ -22,14 +22,16 @@ module Net
       bool = false
 
       case RbConfig::CONFIG['host_os']
-        when /linux|bsd|osx|mach|darwin/i
-          pcmd += ['-c1', host]
+        when /linux/i
+          pcmd += ['-c', '1', '-W', (@timeout).to_s, host]
+        when /bsd|osx|mach|darwin/i
+          pcmd += ['-c', '1', '-t', (@timeout).to_s, host]
         when /solaris|sunos/i
           pcmd += [host, '1']
         when /hpux/i
           pcmd += [host, '-n1']
         when /win32|windows|msdos|mswin|cygwin|mingw/i
-          pcmd += ['-n', '1', host]
+          pcmd += ['-n', '1', '-w', (@timeout * 1000).to_i.to_s, host]
         else
           pcmd += [host]
       end
@@ -39,25 +41,32 @@ module Net
       begin
         err = nil
 
-        Timeout.timeout(@timeout){
-          Open3.popen3(*pcmd) do |stdin, stdout, stderr, thread|
-            err = stderr.gets # Can't chomp yet, might be nil
+        Open3.popen3(*pcmd) do |stdin, stdout, stderr, thread|
+          err = stderr.gets # Can't chomp yet, might be nil
 
-            case thread.value.exitstatus
-              when 0
-                bool = true  # Success, at least one response.
-                if err & err =~ /warning/i
-                  @warning = err.chomp
-                end
-              when 2
-                bool = false # Transmission successful, no response.
+          case thread.value.exitstatus
+            when 0
+              bool = true  # Success, at least one response.
+              if err & err =~ /warning/i
+                @warning = err.chomp
+              end
+            when 2
+              bool = false # Transmission successful, no response.
+              @exception = err.chomp if err
+            else
+              bool = false # An error occurred
+              if err
                 @exception = err.chomp
               else
-                bool = false # An error occurred
-                @exception = err.chomp
-            end
+                stdout.each_line do |line|
+                  if line =~ /(timed out|could not find host|packet loss)/i
+                    @exception = line.chomp
+                    break
+                  end
+                end
+              end
           end
-        }
+        end
       rescue Exception => error
         @exception = error.message
       end
