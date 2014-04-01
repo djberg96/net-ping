@@ -22,8 +22,10 @@ module Net
       bool = false
 
       case RbConfig::CONFIG['host_os']
-        when /linux|bsd|osx|mach|darwin/i
-          pcmd += ['-c1', host]
+        when /linux/i
+          pcmd += ['-c', '1', '-W', (@timeout).to_s, host]
+        when /bsd|osx|mach|darwin/i
+          pcmd += ['-c', '1', '-t', (@timeout).to_s, host]
         when /solaris|sunos/i
           pcmd += [host, '1']
         when /hpux/i
@@ -57,7 +59,7 @@ module Net
                 @exception = err.chomp
               else
                 stdout.each_line do |line|
-                  if line =~ /(timed out|could not find host)/i
+                  if line =~ /(timed out|could not find host|packet loss)/i
                     @exception = line.chomp
                     break
                   end

@@ -126,7 +126,7 @@ class TC_Net_Ping_External < Test::Unit::TestCase
     assert_false(ext.ping?)
     elapsed = Time.now - start
     assert_true(elapsed < 2.5, "Actual elapsed: #{elapsed}")
-    assert_match('could not find host', ext.exception)
+    assert_not_nil(ext.exception)
   end
 
   def teardown
