@@ -23,15 +23,15 @@ module Net
 
       case RbConfig::CONFIG['host_os']
         when /linux/i
-          pcmd += ['-c', '1', '-W', (@timeout).to_s, host]
+          pcmd += ['-c', '1', '-W', @timeout.to_s, host]
         when /bsd|osx|mach|darwin/i
-          pcmd += ['-c', '1', '-t', (@timeout).to_s, host]
+          pcmd += ['-c', '1', '-t', @timeout.to_s, host]
         when /solaris|sunos/i
           pcmd += [host, @timeout.to_s]
         when /hpux/i
-          pcmd += [host, '-n1']
+          pcmd += [host, '-n1', '-m', @timeout.to_s]
         when /win32|windows|msdos|mswin|cygwin|mingw/i
-          pcmd += ['-n', '1', '-w', (@timeout * 1000).to_i.to_s, host]
+          pcmd += ['-n', '1', '-w', (@timeout * 1000).to_s, host]
         else
           pcmd += [host]
       end
