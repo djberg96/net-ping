@@ -1,3 +1,9 @@
+== 1.7.3 - ???
+* Removed the Timeout block for the Ping::External class as it apparently
+  hasn't worked with open3 for some time. Instead, it now uses your command
+  line ping's timeout switch. Thanks go to Andrea Bernardo Ciddio for the
+  spot.
+
 == 1.7.2 - 21-Jan-2014
 * Fixed a bug in the Ping::HTTP constructor where it was not honoring the
   port if provided as the second argument. Thanks go to Florian Anderiasch
