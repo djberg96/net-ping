@@ -1,7 +1,7 @@
 #######################################################################
 # test_net_ping_icmp.rb
 #
-# Test case for the Net::PingICMP class.  You must run this test case
+# Test case for the Net::PingICMP class. You must run this test case
 # with root privileges on UNIX systems. This should be run via the
 # 'test' or 'test:icmp' Rake task.
 #######################################################################
@@ -97,6 +97,12 @@ class TC_PingICMP < Test::Unit::TestCase
     assert_respond_to(@icmp, :timeout=)
     assert_nothing_raised{ @icmp.timeout = 7 }
     assert_equal(7, @icmp.timeout)
+  end
+
+  test "timeout works as expected" do
+    icmp = Net::Ping::ICMP.new('bogus.com', nil, 0.000001)
+    assert_false(icmp.ping?)
+    assert_equal('timeout', icmp.exception)
   end
 
   test "exception method basic functionality" do
