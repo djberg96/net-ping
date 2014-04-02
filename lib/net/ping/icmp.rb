@@ -107,37 +107,36 @@ module Net
       socket.send(msg, 0, saddr) # Send the message
 
       begin
-        Timeout.timeout(@timeout){
-          while true
-            io_array = select([socket], nil, nil, timeout)
+        while true
+          io_array = select([socket], nil, nil, timeout)
 
-            if io_array.nil? || io_array[0].empty?
-              return false
-            end
-
-            pid = nil
-            seq = nil
-
-            data = socket.recvfrom(1500).first
-            type = data[20, 2].unpack('C2').first
-
-            case type
-              when ICMP_ECHOREPLY
-                if data.length >= 28
-                  pid, seq = data[24, 4].unpack('n3')
-                end
-              else
-                if data.length > 56
-                  pid, seq = data[52, 4].unpack('n3')
-                end
-            end
-
-            if pid == @pid && seq == @seq && type == ICMP_ECHOREPLY
-              bool = true
-              break
-            end
+          if io_array.nil? || io_array[0].empty?
+            @exception = "timeout" if io_array.nil?
+            return false
           end
-        }
+
+          pid = nil
+          seq = nil
+
+          data = socket.recvfrom(1500).first
+          type = data[20, 2].unpack('C2').first
+
+          case type
+            when ICMP_ECHOREPLY
+              if data.length >= 28
+                pid, seq = data[24, 4].unpack('n3')
+              end
+            else
+              if data.length > 56
+                pid, seq = data[52, 4].unpack('n3')
+              end
+          end
+
+          if pid == @pid && seq == @seq && type == ICMP_ECHOREPLY
+            bool = true
+            break
+          end
+        end
       rescue Exception => err
         @exception = err
       ensure
