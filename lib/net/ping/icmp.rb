@@ -36,7 +36,6 @@ module Net
         end
       end
 
-      @seq = 0
       @bind_port = 0
       @bind_host = nil
       @data_size = 56
@@ -66,6 +65,14 @@ module Net
       @bind_port = port
     end
 
+    # Class instance variable, used to make the code thread safe.
+    @seq = 0
+    @mutex = Mutex.new
+
+    def self.next_seq
+      @mutex.synchronize{ @seq = (@seq + 1) % 65536 }
+    end
+
     # Pings the +host+ specified in this method or in the constructor.  If a
     # host was not specified either here or in the constructor, an
     # ArgumentError is raised.
@@ -85,15 +92,15 @@ module Net
         socket.bind(saddr)
       end
 
-      @seq = (@seq + 1) % 65536
+      seq = ICMP.next_seq
       pstring = 'C2 n3 A' << @data_size.to_s
       timeout = @timeout
 
       checksum = 0
-      msg = [ICMP_ECHO, ICMP_SUBCODE, checksum, @pid, @seq, @data].pack(pstring)
+      msg = [ICMP_ECHO, ICMP_SUBCODE, checksum, @pid, seq, @data].pack(pstring)
 
       checksum = checksum(msg)
-      msg = [ICMP_ECHO, ICMP_SUBCODE, checksum, @pid, @seq, @data].pack(pstring)
+      msg = [ICMP_ECHO, ICMP_SUBCODE, checksum, @pid, seq, @data].pack(pstring)
 
       begin
         saddr = Socket.pack_sockaddr_in(0, host)
@@ -116,7 +123,7 @@ module Net
           end
 
           pid = nil
-          seq = nil
+          seq_recv = nil
 
           data = socket.recvfrom(1500).first
           type = data[20, 2].unpack('C2').first
@@ -124,15 +131,15 @@ module Net
           case type
             when ICMP_ECHOREPLY
               if data.length >= 28
-                pid, seq = data[24, 4].unpack('n3')
+                pid, seq_recv = data[24, 4].unpack('n3')
               end
             else
               if data.length > 56
-                pid, seq = data[52, 4].unpack('n3')
+                pid, seq_recv = data[52, 4].unpack('n3')
               end
           end
 
-          if pid == @pid && seq == @seq && type == ICMP_ECHOREPLY
+          if pid == @pid && seq_recv == @seq && type == ICMP_ECHOREPLY
             bool = true
             break
           end
@@ -174,4 +181,39 @@ module Net
       return (~((check >> 16) + check) & 0xffff)
     end
   end
+end
+
+if $0 == __FILE__
+  # inaccurate with CONCURRENCY = 2
+  # ok with CONCURRENCY = 1
+  CONCURRENCY = (ENV['CONCURRENCY'] || 2).to_i
+
+  threads = []
+  queue = Queue.new
+
+  # Here are four ips that should return pings and two non-exist ip
+  ips = ['8.8.4.4', '8.8.9.9', '127.0.0.1', '8.8.8.8', '8.8.8.9', '127.0.0.2']
+  ips.each do |i|
+    queue << i
+  end
+
+  CONCURRENCY.times do
+    threads << Thread.new(queue) do |q|
+      while ! q.empty?
+        ip = q.pop
+        expect_failure = ip =~ /9$/
+        ping = Net::Ping::ICMP.new(ip, nil, 1)
+        if ping.ping
+          puts "ping #{ip} returned true, which #{expect_failure ? 'is NOT' : 'IS'} as expected"
+          exit 1 if expect_failure
+        else
+          puts "check ping #{ip} returned false, with exception: #{ping.exception}, which #{expect_failure ? 'IS' : 'is NOT'} as expected"
+          exit 1 unless expect_failure
+        end
+      end
+    end
+  end
+  puts 'Waiting for threads'
+  threads.each {|t| t.join}
+  puts 'Finished without error'
 end
