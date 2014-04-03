@@ -24,6 +24,8 @@ module Net
       case RbConfig::CONFIG['host_os']
         when /linux/i
           pcmd += ['-c', '1', '-W', @timeout.to_s, host]
+        when /aix/i
+          pcmd += ['-c', '1', '-w', @timeout.to_s, host]
         when /bsd|osx|mach|darwin/i
           pcmd += ['-c', '1', '-t', @timeout.to_s, host]
         when /solaris|sunos/i
@@ -42,6 +44,7 @@ module Net
         err = nil
 
         Open3.popen3(*pcmd) do |stdin, stdout, stderr, thread|
+          stdin.close
           err = stderr.gets # Can't chomp yet, might be nil
 
           case thread.value.exitstatus
