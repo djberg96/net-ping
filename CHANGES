@@ -5,6 +5,7 @@
   spot.
 * Removed a redundant Timeout block in the Ping::ICMP class.
 * If an ICMP ping times out, the exception attribute is set to "timeout".
+* Added explicit support for AIX for the Ping::External class.
 
 == 1.7.2 - 21-Jan-2014
 * Fixed a bug in the Ping::HTTP constructor where it was not honoring the
