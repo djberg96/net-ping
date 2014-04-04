@@ -3,6 +3,7 @@
   hasn't worked with open3 for some time. Instead, it now uses your command
   line ping's timeout switch. Thanks go to Andrea Bernardo Ciddio for the
   spot.
+* Made ICMP pings thread safe. I think.
 * Removed a redundant Timeout block in the Ping::ICMP class.
 * If an ICMP ping times out, the exception attribute is set to "timeout".
 * Added explicit support for AIX for the Ping::External class.
