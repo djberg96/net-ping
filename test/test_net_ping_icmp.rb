@@ -7,6 +7,7 @@
 #######################################################################
 require 'test-unit'
 require 'net/ping/icmp'
+require 'thread'
 
 if File::ALT_SEPARATOR
   require 'win32/security'
@@ -24,6 +25,7 @@ class TC_PingICMP < Test::Unit::TestCase
   def setup
     @host = '127.0.0.1' # 'localhost'
     @icmp = Net::Ping::ICMP.new(@host)
+    @concurrency = 3
   end
 
   test "icmp ping basic functionality" do
@@ -43,6 +45,28 @@ class TC_PingICMP < Test::Unit::TestCase
   test "icmp ping of local host is successful" do
     assert_true(Net::Ping::ICMP.new(@host).ping?)
     assert_true(Net::Ping::ICMP.new('192.168.0.1').ping?)
+  end
+
+  test "threaded icmp ping returns expected results" do
+    ips = ['8.8.4.4', '8.8.9.9', '127.0.0.1', '8.8.8.8', '8.8.8.9']
+    queue = Queue.new
+    threads = []
+
+    ips.each{ |ip| queue <<  ip }
+
+    @concurrency.times{
+      threads << Thread.new(queue) do |q|
+        ip = q.pop
+        icmp = Net::Ping::ICMP.new(ip, nil, 1)
+        if ip =~ /9/
+          assert_false(icmp.ping?)
+        else
+          assert_true(icmp.ping?)
+        end
+      end
+    }
+
+    threads.each{ |t| t.join }
   end
 
   test "ping? is an alias for ping" do
@@ -141,5 +165,6 @@ class TC_PingICMP < Test::Unit::TestCase
   def teardown
     @host = nil
     @icmp = nil
+    @concurrency = nil
   end
 end
