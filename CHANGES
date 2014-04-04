@@ -1,4 +1,4 @@
-== 1.7.3 - ???
+== 1.7.3 - 3-Apr-2014
 * Removed the Timeout block for the Ping::External class as it apparently
   hasn't worked with open3 for some time. Instead, it now uses your command
   line ping's timeout switch. Thanks go to Andrea Bernardo Ciddio for the
