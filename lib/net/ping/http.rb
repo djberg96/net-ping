@@ -103,7 +103,7 @@ module Net
             redirect = URI.parse(response['location'])
             redirect = uri + redirect if redirect.relative?
             response = do_ping(redirect, port)
-            rlimit   += 1
+            rlimit += 1
           end
 
           if response.is_a?(Net::HTTPSuccess)
@@ -140,31 +140,37 @@ module Net
 
     def do_ping(uri, port)
       response = nil
-      proxy    = uri.find_proxy || URI.parse("")
+      proxy = uri.find_proxy || URI.parse("")
+
       begin
         uri_path = uri.path.empty? ? '/' : uri.path
-        headers  = { }
-        headers["User-Agent"] = user_agent unless user_agent.nil?
-        Timeout.timeout(@timeout) do
-          http = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password).new(uri.host, port)
-          @proxied = http.proxy?
-          if @get_request == true
-            request = Net::HTTP::Get.new(uri_path)
-          else
-            request = Net::HTTP::Head.new(uri_path)
-          end
 
-          if uri.scheme == 'https'
-            http.use_ssl     = true
-            http.verify_mode = @ssl_verify_mode
-          end
+        headers = {}
+        headers["User-Agent"] = user_agent if user_agent
 
-          response = http.start { |h| h.request(request) }
+        http = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password).new(uri.host, port)
+        http.read_timeout = timeout
+
+        @proxied = http.proxy?
+
+        if @get_request == true
+          request = Net::HTTP::Get.new(uri_path)
+        else
+          request = Net::HTTP::Head.new(uri_path)
         end
+
+        if uri.scheme == 'https'
+          http.use_ssl = true
+          http.verify_mode = @ssl_verify_mode
+        end
+
+        response = http.start { |h| h.request(request) }
       rescue Exception => err
         @exception = err.message
       end
+
       @code = response.code if response
+
       response
     end
   end
