@@ -28,7 +28,7 @@ end
 
 class TC_Net_Ping < Test::Unit::TestCase
   def test_net_ping_version
-    assert_equal('1.7.2', Net::Ping::VERSION)
+    assert_equal('1.7.3', Net::Ping::VERSION)
   end
 end
 
