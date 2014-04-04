@@ -3,7 +3,7 @@ require 'rbconfig'
 
 Gem::Specification.new do |spec|
   spec.name      = 'net-ping'
-  spec.version   = '1.7.2'
+  spec.version   = '1.7.3'
   spec.license   = 'Artistic 2.0'
   spec.author    = 'Daniel J. Berger'
   spec.email     = 'djberg96@gmail.com'
@@ -12,11 +12,10 @@ Gem::Specification.new do |spec|
   spec.test_file = 'test/test_net_ping.rb'
   spec.files     = Dir['**/*'].reject{ |f| f.include?('git') }
 
-  spec.rubyforge_project = 'shards'
   spec.extra_rdoc_files  = ['README', 'CHANGES', 'doc/ping.txt']
 
   # The TCP Ping class requires this for non-blocking sockets.
-  spec.required_ruby_version = ">= 1.9.1"
+  spec.required_ruby_version = ">= 1.9.3"
 
   spec.add_development_dependency('test-unit')
   spec.add_development_dependency('fakeweb')
