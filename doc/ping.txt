@@ -221,7 +221,7 @@ Ping#warning
    UDP pings may not work with older versions of Ruby 1.9.x.
 
    Please report any bugs on the project page at
-   http://www.rubyforge.org/projects/shards.
+   https://github.com/djberg96/net-ping
 
 = Acknowledgements
    The Ping::ICMP#ping method is based largely on the identical method from
@@ -235,7 +235,7 @@ Ping#warning
    Artistic 2.0
 
 = Copyright
-   (C) 2003-2013 Daniel J. Berger, All Rights Reserved
+   (C) 2003-2014 Daniel J. Berger, All Rights Reserved
 
 = Warranty
    This package is provided "as is" and without any express or
