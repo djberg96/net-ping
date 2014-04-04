@@ -7,6 +7,7 @@
   * fakeweb (test only)
   * test-unit (test only)
 
+  Ruby users should use Ruby 1.9.3 or later.
   JRuby users should use JRuby 1.6.7 or later.
 
 == Installation
@@ -40,8 +41,8 @@
   JRuby 1.6.7 or later is required for external pings because of a bug
   in earlier versions with open3 and stream handling.
 
-  ICMP pings are not thread safe. See https://www.ruby-forum.com/topic/146116.
-  Patches welcome.
+  ICMP pings will not work with JRuby without some sort of third-party
+  library support for raw sockets in Java, such as RockSaw.
 
 == License
   Artistic 2.0
