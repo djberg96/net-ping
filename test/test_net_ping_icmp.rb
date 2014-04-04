@@ -22,6 +22,10 @@ else
 end
 
 class TC_PingICMP < Test::Unit::TestCase
+  def self.startup
+    @@jruby = RUBY_PLATFORM == 'java'
+  end
+
   def setup
     @host = '127.0.0.1' # 'localhost'
     @icmp = Net::Ping::ICMP.new(@host)
@@ -30,24 +34,29 @@ class TC_PingICMP < Test::Unit::TestCase
 
   test "icmp ping basic functionality" do
     assert_respond_to(@icmp, :ping)
+    omit_if(@@jruby)
     assert_nothing_raised{ @icmp.ping }
   end
 
   test "icmp ping accepts a host" do
+    omit_if(@@jruby)
     assert_nothing_raised{ @icmp.ping(@host) }
   end
 
   test "icmp ping returns a boolean" do
+    omit_if(@@jruby)
     assert_boolean(@icmp.ping)
     assert_boolean(@icmp.ping(@host))
   end
 
   test "icmp ping of local host is successful" do
+    omit_if(@@jruby)
     assert_true(Net::Ping::ICMP.new(@host).ping?)
     assert_true(Net::Ping::ICMP.new('192.168.0.1').ping?)
   end
 
   test "threaded icmp ping returns expected results" do
+    omit_if(@@jruby)
     ips = ['8.8.4.4', '8.8.9.9', '127.0.0.1', '8.8.8.8', '8.8.8.9']
     queue = Queue.new
     threads = []
@@ -80,6 +89,7 @@ class TC_PingICMP < Test::Unit::TestCase
   end
 
   test "icmp ping fails if host is invalid" do
+    omit_if(@@jruby)
     assert_false(Net::Ping::ICMP.new('bogus').ping?)
     assert_false(Net::Ping::ICMP.new('http://www.asdfhjklasdfhlkj.com').ping?)
   end
@@ -91,6 +101,7 @@ class TC_PingICMP < Test::Unit::TestCase
   end
 
   test "duration method basic functionality" do
+    omit_if(@@jruby)
     assert_nothing_raised{ @icmp.ping }
     assert_respond_to(@icmp, :duration)
     assert_kind_of(Float, @icmp.duration)
@@ -124,6 +135,7 @@ class TC_PingICMP < Test::Unit::TestCase
   end
 
   test "timeout works as expected" do
+    omit_if(@@jruby)
     icmp = Net::Ping::ICMP.new('bogus.com', nil, 0.000001)
     assert_false(icmp.ping?)
     assert_equal('timeout', icmp.exception)
@@ -131,7 +143,6 @@ class TC_PingICMP < Test::Unit::TestCase
 
   test "exception method basic functionality" do
     assert_respond_to(@icmp, :exception)
-    assert_nothing_raised{ @icmp.ping }
   end
 
   test "exception method returns nil if no ping has happened yet" do
@@ -158,6 +169,7 @@ class TC_PingICMP < Test::Unit::TestCase
   end
 
   test "setting an odd data_size is valid" do
+    omit_if(@@jruby)
     assert_nothing_raised{ @icmp.data_size = 57 }
     assert_boolean(@icmp.ping)
   end
@@ -166,5 +178,9 @@ class TC_PingICMP < Test::Unit::TestCase
     @host = nil
     @icmp = nil
     @concurrency = nil
+  end
+
+  def self.shutdown
+    @@jruby = nil
   end
 end
