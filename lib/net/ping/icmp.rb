@@ -44,7 +44,7 @@ module Net
 
       0.upto(@data_size){ |n| @data << (n % 256).chr }
 
-      @pid  = Process.pid & 0xffff
+      @thread_id = Thread.current.object_id & 0xffff
 
       super(host, port, timeout)
       @port = nil # This value is not used in ICMP pings.
@@ -59,7 +59,7 @@ module Net
     end
 
     # Associates the local end of the socket connection with the given
-    # +host+ and +port+.  The default port is 0.
+    # +host+ and +port+. The default port is 0.
     #
     def bind(host, port = 0)
       @bind_host = host
@@ -90,10 +90,10 @@ module Net
       timeout = @timeout
 
       checksum = 0
-      msg = [ICMP_ECHO, ICMP_SUBCODE, checksum, @pid, @seq, @data].pack(pstring)
+      msg = [ICMP_ECHO, ICMP_SUBCODE, checksum, @thread_id, @seq, @data].pack(pstring)
 
       checksum = checksum(msg)
-      msg = [ICMP_ECHO, ICMP_SUBCODE, checksum, @pid, @seq, @data].pack(pstring)
+      msg = [ICMP_ECHO, ICMP_SUBCODE, checksum, @thread_id, @seq, @data].pack(pstring)
 
       begin
         saddr = Socket.pack_sockaddr_in(0, host)
@@ -115,7 +115,7 @@ module Net
             return false
           end
 
-          pid = nil
+          thread_id = nil
           seq = nil
 
           data = socket.recvfrom(1500).first
@@ -124,15 +124,15 @@ module Net
           case type
             when ICMP_ECHOREPLY
               if data.length >= 28
-                pid, seq = data[24, 4].unpack('n3')
+                thread_id, seq = data[24, 4].unpack('n3')
               end
             else
               if data.length > 56
-                pid, seq = data[52, 4].unpack('n3')
+                thread_id, seq = data[52, 4].unpack('n3')
               end
           end
 
-          if pid == @pid && seq == @seq && type == ICMP_ECHOREPLY
+          if thread_id == @thread_id && seq == @seq && type == ICMP_ECHOREPLY
             bool = true
             break
           end
