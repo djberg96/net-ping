@@ -91,8 +91,10 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
     assert_respond_to(@http, :port=)
   end
 
-  test 'port attribute expected value' do
+  test 'port attribute is set to expected value' do
     assert_equal(80, @http.port)
+    assert_equal(443, Net::Ping::HTTP.new('https://github.com/path').port)
+    assert_equal(80, Net::Ping::HTTP.new.port)
   end
 
   test 'timeout attribute basic functionality' do
@@ -103,6 +105,14 @@ class TC_Net_Ping_HTTP < Test::Unit::TestCase
   test 'timeout attribute expected values' do
     assert_equal(30, @http.timeout)
     assert_equal(5, @bad.timeout)
+  end
+
+  # TODO: Figure out how to do this with FakeWeb.
+  test 'ping fails if timeout exceeded' do
+    FakeWeb.allow_net_connect = true
+    @http = Net::Ping::HTTP.new('https://github.com/path', 80, 0.01)
+    assert_false(@http.ping?)
+    assert_equal('execution expired', @http.exception)
   end
 
   test 'exception attribute basic functionality' do
