@@ -149,6 +149,8 @@ module Net
         headers["User-Agent"] = user_agent if user_agent
 
         http = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password).new(uri.host, port)
+
+        http.open_timeout = timeout
         http.read_timeout = timeout
 
         @proxied = http.proxy?
