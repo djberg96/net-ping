@@ -42,7 +42,7 @@ module Net
     attr_reader :code
 
     # Creates and returns a new Ping::HTTP object. The default port is the
-    # port associated with the URI. The default timeout is 5 seconds.
+    # port associated with the URI or 80. The default timeout is 5 seconds.
     #
     def initialize(uri=nil, port=nil, timeout=5)
       @follow_redirect = true
@@ -52,6 +52,9 @@ module Net
       @code            = nil
 
       port ||= URI.parse(uri).port if uri
+      port ||= 80
+
+      @port = port
 
       super(uri, port, timeout)
     end
@@ -80,8 +83,10 @@ module Net
 
       uri = URI.parse(host)
 
-      # A port provided here overrides anything provided in constructor
-      port = URI.split(host)[3] || @port
+      # A port provided here via the host argument overrides anything
+      # provided in constructor.
+      #
+      port = URI.split(host)[3] || URI.parse(host).port || @port
       port = port.to_i
 
       start_time = Time.now
@@ -166,7 +171,11 @@ module Net
           http.verify_mode = @ssl_verify_mode
         end
 
-        response = http.start { |h| h.request(request) }
+        response = http.start{ |h|
+          h.open_timeout = timeout
+          h.read_timeout = timeout
+          h.request(request)
+        }
       rescue Exception => err
         @exception = err.message
       end
