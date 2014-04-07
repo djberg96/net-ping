@@ -1,3 +1,13 @@
+== 1.7.4 - ???
+* Remove the Timeout block for the Ping::HTTP class because it wasn't working
+  with JRuby. Instead, we use the builtin open_timeout and read_timeout
+  accessors on the underlying http request. Thanks go to Ian Heggie for the
+  spot.
+* The Ping::HTTP#ping? more robustly parses out the port from the uri argument
+  if provided. In addition, the default port is again set back to 80 as a
+  last resort in the constructor.
+* Added timeout and port tests for the Ping::HTTP class.
+
 == 1.7.3 - 3-Apr-2014
 * Removed the Timeout block for the Ping::External class as it apparently
   hasn't worked with open3 for some time. Instead, it now uses your command
