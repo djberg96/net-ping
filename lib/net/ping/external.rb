@@ -49,7 +49,12 @@ module Net
 
           case thread.value.exitstatus
             when 0
-              bool = true  # Success, at least one response.
+              if stdout.read =~ /unreachable/ix # Windows
+                bool = false
+              else
+                bool = true  # Success, at least one response.
+              end
+
               if err & err =~ /warning/i
                 @warning = err.chomp
               end
