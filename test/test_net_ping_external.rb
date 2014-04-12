@@ -129,6 +129,11 @@ class TC_Net_Ping_External < Test::Unit::TestCase
     assert_not_nil(ext.exception)
   end
 
+  test "pinging an unreachable host on the same subnet returns false" do
+    @bad = Net::Ping::External.new('192.168.0.99')
+    assert_false(@bad.ping?)
+  end
+
   def teardown
     @host  = nil
     @bogus = nil
