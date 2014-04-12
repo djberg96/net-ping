@@ -7,6 +7,8 @@
   if provided. In addition, the default port is again set back to 80 as a
   last resort in the constructor.
 * Added timeout and port tests for the Ping::HTTP class.
+* If a host is unreachable explicitly set the result to false regardless of
+  the actual exit status. This appears to only affect Windows 7 and later.
 
 == 1.7.3 - 3-Apr-2014
 * Removed the Timeout block for the Ping::External class as it apparently
