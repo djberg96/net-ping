@@ -49,8 +49,10 @@ module Net
 
           case thread.value.exitstatus
             when 0
-              if stdout.read =~ /unreachable/ix # Windows
+              info = stdout.read
+              if info =~ /unreachable/ix # Windows
                 bool = false
+                @exception = "host unreachable"
               else
                 bool = true  # Success, at least one response.
               end
