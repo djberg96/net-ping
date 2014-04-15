@@ -138,7 +138,7 @@ class TC_PingICMP < Test::Unit::TestCase
     omit_if(@@jruby)
     icmp = Net::Ping::ICMP.new('bogus.com', nil, 0.000001)
     assert_false(icmp.ping?)
-    assert_equal('timeout', icmp.exception)
+    assert_kind_of(Timeout::Error, icmp.exception)
   end
 
   test "exception method basic functionality" do
