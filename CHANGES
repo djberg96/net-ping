@@ -1,4 +1,4 @@
-== 1.7.4 - ???
+== 1.7.4 - 16-Apr-2014
 * Remove the Timeout block for the Ping::HTTP class because it wasn't working
   with JRuby. Instead, we use the builtin open_timeout and read_timeout
   accessors on the underlying http request. Thanks go to Ian Heggie for the
