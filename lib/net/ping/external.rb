@@ -15,9 +15,13 @@ module Net
     # contain a string indicating what went wrong. If the ping succeeded then
     # the Ping::External#warning method may or may not contain a value.
     #
-    def ping(host = @host, count = @count)
+    def ping(host = @host, count = 1, interval = 1)
 
       raise "Count must be an integer" unless count.is_a? Integer
+
+      unless interval.is_a?(Numeric) && interval >= 0.2
+        raise "Interval must be a decimal greater than or equal to 0.2"
+      end 
 
       super(host)
 
@@ -26,7 +30,7 @@ module Net
 
       case RbConfig::CONFIG['host_os']
         when /linux/i
-          pcmd += ['-c', count.to_s, '-W', @timeout.to_s, host]
+          pcmd += ['-c', count.to_s, '-W', @timeout.to_s, host, '-i', interval.to_s]
         when /aix/i
           pcmd += ['-c', count.to_s, '-w', @timeout.to_s, host]
         when /bsd|osx|mach|darwin/i
