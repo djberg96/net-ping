@@ -22,7 +22,7 @@ module Net
 
       unless interval.is_a?(Numeric) && interval >= 0.2
         raise "Interval must be a decimal greater than or equal to 0.2"
-      end 
+      end
 
       super(host)
 
@@ -31,7 +31,7 @@ module Net
 
       case RbConfig::CONFIG['host_os']
         when /linux/i
-          pcmd += ['-c', count.to_s, '-w', timeout.to_s, host, '-i', interval.to_s]
+          pcmd += ['-c', count.to_s, '-W', timeout.to_s, host, '-i', interval.to_s]
         when /aix/i
           pcmd += ['-c', count.to_s, '-w', timeout.to_s, host]
         when /bsd|osx|mach|darwin/i
