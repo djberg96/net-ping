@@ -1,3 +1,9 @@
+== 1.7.5 - ???
+* Added packet count and intervals for external pings. Thanks go to Jack Hayter
+  for the patch.
+* No longer report closed TCP port as active. Thanks go to Joshua Yanovski for
+  the spot and patch.
+
 == 1.7.4 - 16-Apr-2014
 * Remove the Timeout block for the Ping::HTTP class because it wasn't working
   with JRuby. Instead, we use the builtin open_timeout and read_timeout
