@@ -15,7 +15,15 @@ module Net
     # contain a string indicating what went wrong. If the ping succeeded then
     # the Ping::External#warning method may or may not contain a value.
     #
-    def ping(host = @host)
+    def ping(host = @host, count = 1, interval = 1, timeout = @timeout)
+
+      raise "Count must be an integer" unless count.is_a? Integer
+      raise "Timeout must be a number" unless timeout.is_a? Numeric
+
+      unless interval.is_a?(Numeric) && interval >= 0.2
+        raise "Interval must be a decimal greater than or equal to 0.2"
+      end 
+
       super(host)
 
       pcmd = ['ping']
@@ -23,17 +31,17 @@ module Net
 
       case RbConfig::CONFIG['host_os']
         when /linux/i
-          pcmd += ['-c', '1', '-W', @timeout.to_s, host]
+          pcmd += ['-c', count.to_s, '-w', timeout.to_s, host, '-i', interval.to_s]
         when /aix/i
-          pcmd += ['-c', '1', '-w', @timeout.to_s, host]
+          pcmd += ['-c', count.to_s, '-w', timeout.to_s, host]
         when /bsd|osx|mach|darwin/i
-          pcmd += ['-c', '1', '-t', @timeout.to_s, host]
+          pcmd += ['-c', count.to_s, '-t', timeout.to_s, host]
         when /solaris|sunos/i
-          pcmd += [host, @timeout.to_s]
+          pcmd += [host, timeout.to_s]
         when /hpux/i
-          pcmd += [host, '-n1', '-m', @timeout.to_s]
+          pcmd += [host, "-n#{count.to_s}", '-m', timeout.to_s]
         when /win32|windows|msdos|mswin|cygwin|mingw/i
-          pcmd += ['-n', '1', '-w', (@timeout * 1000).to_s, host]
+          pcmd += ['-n', count.to_s, '-w', (timeout * 1000).to_s, host]
         else
           pcmd += [host]
       end
