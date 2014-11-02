@@ -20,7 +20,7 @@ namespace 'gem' do
   desc 'Install the net-ping gem'
   task :install => [:create] do
     gem_file = Dir["*.gem"].first
-    sh "gem install #{gem_file}"
+    sh "gem install -l #{gem_file}"
   end
 end
 
