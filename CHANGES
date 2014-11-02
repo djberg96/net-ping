@@ -1,4 +1,4 @@
-== 1.7.5 - ???
+== 1.7.5 - 2-Nov-2014
 * Added packet count and intervals for external pings. Thanks go to Jack Hayter
   for the patch.
 * No longer report closed TCP port as active. Thanks go to Joshua Yanovski for
