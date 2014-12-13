@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
 
   if File::ALT_SEPARATOR
     require 'rbconfig'
-    arch = RbConfig::CONFIG['build_os']
+    arch = RbConfig::CONFIG['build_os'] || 'mingw32' # JRuby
     spec.platform = Gem::Platform.new(['universal', arch])
     spec.platform.version = nil
 
