@@ -4,14 +4,14 @@
 #
 require 'rbconfig'
 
-require File.join(File.dirname(__FILE__), 'ping/tcp')
-require File.join(File.dirname(__FILE__), 'ping/udp')
-require File.join(File.dirname(__FILE__), 'ping/icmp')
-require File.join(File.dirname(__FILE__), 'ping/external')
-require File.join(File.dirname(__FILE__), 'ping/http')
+require_relative 'ping/tcp'
+require_relative 'ping/udp'
+require_relative 'ping/icmp'
+require_relative 'ping/external'
+require_relative 'ping/http'
 
 RbConfig = Config unless Object.const_defined?(:RbConfig)
 
 if File::ALT_SEPARATOR
-  require File.join(File.dirname(__FILE__), 'ping/wmi')
+  require_relative 'ping/wmi'
 end
