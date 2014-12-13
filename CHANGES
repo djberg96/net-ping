@@ -1,3 +1,7 @@
+== 1.7.6 - 13-Dec-2014
+* Changed TCP handling yet again, as it was returning false positives. Thanks
+  go to Marcos Piccinini for the spot.
+
 == 1.7.5 - 2-Nov-2014
 * Added packet count and intervals for external pings. Thanks go to Jack Hayter
   for the patch.
