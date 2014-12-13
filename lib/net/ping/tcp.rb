@@ -68,17 +68,23 @@ module Net
 
         resp = IO.select(nil, [sock], nil, timeout)
 
-        if @@service_check
-          bool = true
-        elsif resp.nil?
-          # Assume ECONNREFUSED at this point
-          @exception = Errno::ECONNREFUSED
+        if resp.nil?
+          if @@service_check
+            bool = true
+          else
+            bool = false
+            @exception = Errno::ECONNREFUSED # Assume ECONNREFUSED
+          end
         else
           sockopt = sock.getsockopt(Socket::SOL_SOCKET, Socket::SO_ERROR)
 
-          # Check to see if ECONNREFUSED actually occurred.
-          if sockopt.int == Errno::ECONNREFUSED::Errno
-            @exception = Errno::ECONNREFUSED
+          if sockopt.int != 0
+            if @@service_check && sockopt.int == Errno::ECONNREFUSED::Errno
+              bool = true
+            else
+              bool = false
+              @exception = SystemCallError.new(sockopt.int)
+            end
           else
             bool = true
           end
