@@ -20,7 +20,11 @@ namespace 'gem' do
   desc 'Install the net-ping gem'
   task :install => [:create] do
     gem_file = Dir["*.gem"].first
-    sh "gem install -l #{gem_file}"
+    if RUBY_PLATFORM == 'java'
+      sh "jruby -S gem install -l #{gem_file}"
+    else
+      sh "gem install -l #{gem_file}"
+    end
   end
 end
 
