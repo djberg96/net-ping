@@ -13,9 +13,11 @@
 == Installation
   gem install net-ping
 
-== Maintainer Wanted!
-  I would very much like to turn this gem over to someone who is using it
-  more actively than I am. Please let me know if you are interested!
+== New Maintainer
+  Chris Chernesky is the current maintainer of net-ping as of version 1.7.6
+  and later. Please post any new issues on his repo, not here:
+
+  https://github.com/chernesk/net-ping
 
 == Notes
   Please read the documentation under the 'doc' directory. Especially pay
